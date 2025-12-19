@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Camera, Sparkles, Check, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -106,7 +107,12 @@ export default function AIDemo() {
                         {/* Food Image Placeholder */}
                         <div style={{ position: "relative" }}>
                             <div className="ai-demo-image-container">
-                                🍽️
+                                <Image
+                                    src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800"
+                                    alt="Healthy Meal"
+                                    fill
+                                    className="object-cover rounded-2xl"
+                                />
                                 {/* Scanning overlay */}
                                 {isAnalyzing && (
                                     <div className="scan-overlay">

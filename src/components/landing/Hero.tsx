@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Apple, Play } from "lucide-react";
 import Image from "next/image";
+import AnimatedShaderBackground from "@/components/ui/animated-shader-background";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -120,6 +121,9 @@ export default function Hero({ phoneImage }: HeroProps) {
 
     return (
         <section ref={heroRef} className="hero-section">
+            {/* Animated Background Streaks */}
+            <AnimatedShaderBackground />
+
             {/* Background Glow */}
             <div ref={glowRef} className="hero-glow" />
 

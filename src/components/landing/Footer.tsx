@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Apple, Play, Dumbbell, Twitter, Instagram, Youtube } from "lucide-react";
+import AnimatedShaderBackground from "@/components/ui/animated-shader-background";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,6 +33,7 @@ export default function Footer() {
 
     return (
         <footer id="download" ref={footerRef} className="footer-section">
+            <AnimatedShaderBackground />
             <div className="footer-content">
                 {/* CTA */}
                 <div className="footer-badge">
