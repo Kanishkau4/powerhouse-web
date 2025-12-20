@@ -1,197 +1,182 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Apple, Play } from "lucide-react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { Apple, Play, Activity, Utensils, Zap, Trophy } from "lucide-react";
 import Image from "next/image";
-import AnimatedShaderBackground from "@/components/ui/animated-shader-background";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface HeroProps {
-    phoneImage?: string; // Optional: path to your phone screenshot
+    phoneImage?: string;
 }
 
 export default function Hero({ phoneImage }: HeroProps) {
-    const heroRef = useRef<HTMLDivElement>(null);
-    const phoneRef = useRef<HTMLDivElement>(null);
-    const glowRef = useRef<HTMLDivElement>(null);
-    const titleRef = useRef<HTMLHeadingElement>(null);
-    const subtitleRef = useRef<HTMLParagraphElement>(null);
-    const buttonsRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            // Initial animation timeline
-            const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end end"],
+    });
 
-            tl.from(titleRef.current, {
-                y: 100,
-                opacity: 0,
-                duration: 1.2,
-            })
-                .from(
-                    subtitleRef.current,
-                    {
-                        y: 50,
-                        opacity: 0,
-                        duration: 1,
-                    },
-                    "-=0.8"
-                )
-                .from(
-                    buttonsRef.current,
-                    {
-                        y: 30,
-                        opacity: 0,
-                        duration: 0.8,
-                    },
-                    "-=0.6"
-                )
-                .from(
-                    phoneRef.current,
-                    {
-                        y: 150,
-                        opacity: 0,
-                        rotateX: -20,
-                        duration: 1.4,
-                        ease: "power3.out",
-                    },
-                    "-=1"
-                );
+    // Smooth scroll progress for fluidity
+    const smoothProgress = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    });
 
-            // Glow pulse animation
-            gsap.to(glowRef.current, {
-                scale: 1.2,
-                opacity: 0.8,
-                duration: 3,
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut",
-            });
+    // Phone Animation Transforms
+    // Starts lower and moves up past the text
+    const phoneY = useTransform(smoothProgress, [0, 1], ["50%", "-60%"]);
+    // Reduced final scale from 1.4 to 1.25
+    const phoneScale = useTransform(smoothProgress, [0, 0.6], [1.0, 1.25]);
+    const phoneRotateX = useTransform(smoothProgress, [0, 0.6], [0, 10]);
 
-            // Parallax scroll effect for phone
-            gsap.to(phoneRef.current, {
-                scrollTrigger: {
-                    trigger: heroRef.current,
-                    start: "top top",
-                    end: "bottom top",
-                    scrub: 1.5,
-                },
-                y: -100,
-                rotateX: 15,
-                scale: 0.9,
-            });
+    // Text Animation Transforms (Heading moves slightly and fades)
+    const textY = useTransform(smoothProgress, [0, 0.5], [0, -100]);
+    const textOpacity = useTransform(smoothProgress, [0, 0.4], [1, 0.15]);
 
-            // Parallax for glow
-            gsap.to(glowRef.current, {
-                scrollTrigger: {
-                    trigger: heroRef.current,
-                    start: "top top",
-                    end: "bottom top",
-                    scrub: 2,
-                },
-                y: -200,
-                scale: 0.5,
-                opacity: 0,
-            });
-        }, heroRef);
+    // Transaction Card Animation Transforms (Shifted targets upward)
+    // Left side cards
+    const card1X = useTransform(smoothProgress, [0.2, 0.8], [0, -420]);
+    const card1Y = useTransform(smoothProgress, [0.2, 0.8], [0, -240]); // Shifting up
+    const card1Opacity = useTransform(smoothProgress, [0.25, 0.45], [0, 1]);
 
-        // Mouse parallax effect
-        const handleMouseMove = (e: MouseEvent) => {
-            if (!phoneRef.current) return;
-            const x = (e.clientX - window.innerWidth / 2) / 40;
-            const y = (e.clientY - window.innerHeight / 2) / 40;
-            gsap.to(phoneRef.current, {
-                rotateY: x,
-                rotateX: -y,
-                duration: 1,
-                ease: "power2.out",
-            });
-        };
+    const card3X = useTransform(smoothProgress, [0.2, 0.8], [0, -380]);
+    const card3Y = useTransform(smoothProgress, [0.2, 0.8], [0, 100]); // Shifting up
+    const card3Opacity = useTransform(smoothProgress, [0.25, 0.45], [0, 1]);
 
-        window.addEventListener("mousemove", handleMouseMove);
+    // Right side cards
+    const card2X = useTransform(smoothProgress, [0.2, 0.8], [0, 420]);
+    const card2Y = useTransform(smoothProgress, [0.2, 0.8], [0, -180]); // Shifting up
+    const card2Opacity = useTransform(smoothProgress, [0.25, 0.45], [0, 1]);
 
-        return () => {
-            ctx.revert();
-            window.removeEventListener("mousemove", handleMouseMove);
-        };
-    }, []);
+    const card4X = useTransform(smoothProgress, [0.2, 0.8], [0, 380]);
+    const card4Y = useTransform(smoothProgress, [0.2, 0.8], [0, 140]); // Shifting up
+    const card4Opacity = useTransform(smoothProgress, [0.25, 0.45], [0, 1]);
 
     return (
-        <section ref={heroRef} className="hero-section">
-            {/* Animated Background Streaks */}
-            <AnimatedShaderBackground />
-
-            {/* Background Glow */}
-            <div ref={glowRef} className="hero-glow" />
-
-            {/* Hero Content */}
-            <div style={{ maxWidth: "900px" }}>
-                <h1 ref={titleRef} className="hero-title">
-                    Your AI Fitness
-                    <br />
-                    <span className="gradient-text">Revolution.</span>
-                </h1>
-                <p ref={subtitleRef} className="hero-subtitle">
-                    Scan meals with AI. Track workouts intelligently. Earn rewards and
-                    level up your fitness journey with gamification.
-                </p>
-
-                {/* App Store Buttons */}
-                <div ref={buttonsRef} className="store-buttons">
-                    <a href="#" className="store-button">
-                        <Apple size={28} />
-                        <div className="store-button-text">
-                            <span>Download on the</span>
-                            <strong>App Store</strong>
-                        </div>
-                    </a>
-                    <a href="#" className="store-button">
-                        <Play size={28} fill="black" />
-                        <div className="store-button-text">
-                            <span>Get it on</span>
-                            <strong>Google Play</strong>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            {/* Phone Mockup */}
-            <div className="phone-container">
-                <div
-                    ref={phoneRef}
-                    className="phone-mockup"
-                    style={{ transformStyle: "preserve-3d" }}
+        <section ref={containerRef} className="hero-section-new">
+            <div className="sticky-content">
+                {/* Background Text (Phone moves over this) */}
+                <motion.div
+                    className="hero-text-container"
+                    style={{ y: textY, opacity: textOpacity }}
                 >
-                    {/* Notch */}
-                    <div className="phone-notch" />
+                    <h1 className="hero-title">
+                        Your AI Fitness
+                        <br />
+                        <span className="gradient-text">Revolution.</span>
+                    </h1>
+                    <p className="hero-subtitle">
+                        Scan meals with AI. Track workouts intelligently. Earn rewards and
+                        level up your fitness journey with gamification.
+                    </p>
 
-                    {/* Phone Screen */}
-                    <div className="phone-screen">
-                        {phoneImage ? (
-                            // If you provide an image path, it will display your screenshot
-                            <Image
-                                src={phoneImage}
-                                alt="PowerHouse App Screenshot"
-                                fill
-                                className="phone-screen-image"
-                                priority
-                            />
-                        ) : (
-                            // Placeholder when no image is provided
-                            <div className="phone-screen-placeholder">
-                                <div style={{ fontSize: "4rem", marginBottom: "16px" }}>📱</div>
-                                <div>Add your app screenshot</div>
-                                <div style={{ fontSize: "0.75rem", marginTop: "8px", color: "#555" }}>
-                                    Pass phoneImage prop to Hero component
-                                </div>
+                    <div className="store-buttons">
+                        <a href="#" className="store-button">
+                            <Apple size={28} />
+                            <div className="store-button-text">
+                                <span>Download on the</span>
+                                <strong>App Store</strong>
                             </div>
-                        )}
+                        </a>
+                        <a href="#" className="store-button">
+                            <Play size={28} fill="black" />
+                            <div className="store-button-text">
+                                <span>Get it on</span>
+                                <strong>Google Play</strong>
+                            </div>
+                        </a>
                     </div>
+                </motion.div>
+
+                {/* Main Visual Scene */}
+                <div className="phone-scene">
+                    {/* Transaction Cards (Positioned behind the phone initially) */}
+                    <TransactionCard
+                        style={{ x: card1X, y: card1Y, opacity: card1Opacity }}
+                        icon={<Utensils size={22} />}
+                        label="Meal Scanned"
+                        value="+420 kcal"
+                        type="orange"
+                    />
+                    <TransactionCard
+                        style={{ x: card2X, y: card2Y, opacity: card2Opacity }}
+                        icon={<Activity size={22} />}
+                        label="Morning Run"
+                        value="5.2 km"
+                        type="green"
+                    />
+                    <TransactionCard
+                        style={{ x: card3X, y: card3Y, opacity: card3Opacity }}
+                        icon={<Zap size={22} />}
+                        label="Energy Boost"
+                        value="+15% XP"
+                        type="purple"
+                    />
+                    <TransactionCard
+                        style={{ x: card4X, y: card4Y, opacity: card4Opacity }}
+                        icon={<Trophy size={22} />}
+                        label="Daily Goal"
+                        value="Completed"
+                        type="blue"
+                    />
+
+                    {/* The Phone Mockup */}
+                    <motion.div
+                        className="phone-mockup-new"
+                        style={{
+                            y: phoneY,
+                            scale: phoneScale,
+                            rotateX: phoneRotateX,
+                            transformStyle: "preserve-3d"
+                        }}
+                    >
+                        {/* Notch */}
+                        <div className="phone-notch" />
+
+                        {/* Phone Screen */}
+                        <div className="phone-screen">
+                            {phoneImage ? (
+                                <Image
+                                    src={phoneImage}
+                                    alt="PowerHouse App Screenshot"
+                                    fill
+                                    className="phone-screen-image"
+                                    priority
+                                />
+                            ) : (
+                                <div className="phone-screen-placeholder">
+                                    <div style={{ fontSize: "4rem", marginBottom: "16px" }}>📱</div>
+                                    <div>Add your app screenshot</div>
+                                </div>
+                            )}
+                        </div>
+                    </motion.div>
                 </div>
             </div>
         </section>
+    );
+}
+
+interface TransactionCardProps {
+    style: any;
+    icon: React.ReactNode;
+    label: string;
+    value: string;
+    type: 'orange' | 'green' | 'purple' | 'blue';
+}
+
+function TransactionCard({ style, icon, label, value, type }: TransactionCardProps) {
+    return (
+        <motion.div className="hero-transaction-card" style={style}>
+            <div className={`card-icon-wrapper ${type}`}>
+                {icon}
+            </div>
+            <div className="card-info">
+                <p className="card-label">{label}</p>
+                <p className="card-value">{value}</p>
+            </div>
+        </motion.div>
     );
 }

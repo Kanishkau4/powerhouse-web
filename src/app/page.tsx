@@ -20,7 +20,7 @@ export default function Home() {
         
         For now, it shows a placeholder.
       */}
-      <Hero phoneImage="/app-screenshot.png" />
+      <Hero phoneImage="/assets/app-screenshot.png" />
 
       <Features />
       <AIDemo />
