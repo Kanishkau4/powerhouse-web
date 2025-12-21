@@ -7,6 +7,7 @@ import Header from "@/components/admin/Header";
 import DataTable, { Column } from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import { supabase, TipCategory } from "@/lib/supabase";
+import { isViewerRole } from "@/lib/auth";
 
 export default function TipCategoriesPage() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -171,6 +172,7 @@ export default function TipCategoriesPage() {
             }}
             onRefresh={fetchCategories}
             searchPlaceholder="Search categories..."
+            readOnly={isViewerRole()}
           />
         </div>
       </main>

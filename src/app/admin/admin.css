@@ -30,6 +30,7 @@
     display: flex;
     min-height: 100vh;
     background-color: var(--admin-bg-sidebar);
+    color: var(--admin-text-main);
 }
 
 /* ===== SIDEBAR ===== */
@@ -53,7 +54,7 @@
 }
 
 .admin-sidebar::-webkit-scrollbar {
-    width: 4px;
+    display: none;
 }
 
 .admin-sidebar::-webkit-scrollbar-thumb {
@@ -818,6 +819,7 @@
     align-items: center;
     gap: 10px;
     cursor: pointer;
+    color: var(--admin-text-main);
 }
 
 .admin-form-checkbox input {
@@ -908,6 +910,7 @@
 
 .admin-modal-body {
     padding: 24px;
+    color: var(--admin-text-main);
 }
 
 .admin-modal-footer {

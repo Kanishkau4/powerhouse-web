@@ -1,4 +1,5 @@
 import { Toaster } from 'react-hot-toast'
+import AdminAuthGuard from '@/components/admin/AdminAuthGuard'
 import './admin.css'
 
 export const metadata = {
@@ -12,32 +13,34 @@ export default function AdminLayout({
     children: React.ReactNode
 }) {
     return (
-        <div className="admin-layout">
-            <Toaster
-                position="bottom-right"
-                toastOptions={{
-                    duration: 4000,
-                    style: {
-                        background: '#1e293b',
-                        color: '#fff',
-                        borderRadius: '12px',
-                        padding: '16px 24px',
-                    },
-                    success: {
-                        iconTheme: {
-                            primary: '#22c55e',
-                            secondary: '#fff',
+        <AdminAuthGuard>
+            <div className="admin-layout">
+                <Toaster
+                    position="bottom-right"
+                    toastOptions={{
+                        duration: 4000,
+                        style: {
+                            background: '#1e293b',
+                            color: '#fff',
+                            borderRadius: '12px',
+                            padding: '16px 24px',
                         },
-                    },
-                    error: {
-                        iconTheme: {
-                            primary: '#ef4444',
-                            secondary: '#fff',
+                        success: {
+                            iconTheme: {
+                                primary: '#22c55e',
+                                secondary: '#fff',
+                            },
                         },
-                    },
-                }}
-            />
-            {children}
-        </div>
+                        error: {
+                            iconTheme: {
+                                primary: '#ef4444',
+                                secondary: '#fff',
+                            },
+                        },
+                    }}
+                />
+                {children}
+            </div>
+        </AdminAuthGuard>
     )
 }

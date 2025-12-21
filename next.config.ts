@@ -35,6 +35,26 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'blogger.googleusercontent.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.motherskitchennepal.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'encrypted-tbn0.gstatic.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'builtwithscience.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.mos.cms.futurecdn.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'plus.unsplash.com',
+      },
     ],
   },
 };

@@ -7,6 +7,7 @@ import Header from "@/components/admin/Header";
 import DataTable, { Column } from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import { supabase, User } from "@/lib/supabase";
+import { isViewerRole } from "@/lib/auth";
 
 export default function UsersPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -35,6 +36,19 @@ export default function UsersPage() {
 
     const fetchUsers = async () => {
         setLoading(true);
+
+        let adminEmails: string[] = ['test@powerhouse.local', 'admin@powerhouse.com']
+
+        try {
+            // This might fail on client-side without service role key
+            const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers()
+            if (!authError && authUsers) {
+                adminEmails = [...adminEmails, ...authUsers.users.map(u => u.email).filter((e): e is string => !!e)]
+            }
+        } catch (err) {
+            console.log("Note: Could not list auth users directly, using fallback filtering.")
+        }
+
         // Fetch count to detect RLS issues (if count > 0 but data empty)
         const { data, count, error } = await supabase
             .from("users")
@@ -46,10 +60,15 @@ export default function UsersPage() {
             console.error("Supabase Error:", error);
         } else {
             console.log("Users fetched:", data?.length, "Total Count:", count);
-            if (count && count > 0 && (!data || data.length === 0)) {
-                toast.error("Data hidden by RLS policies");
-            }
-            setUsers(data || []);
+
+            // Filter out admin users (users whose email is an admin email or contains admin pattern)
+            const filteredUsers = data?.filter(user =>
+                !adminEmails.includes(user.email) &&
+                !user.email.endsWith('@powerhouse.local') &&
+                !user.email.toLowerCase().includes('admin')
+            ) || []
+
+            setUsers(filteredUsers);
         }
         setLoading(false);
     };
@@ -238,6 +257,7 @@ export default function UsersPage() {
                         onDelete={openDeleteModal}
                         onRefresh={fetchUsers}
                         searchPlaceholder="Search users..."
+                        readOnly={isViewerRole()}
                     />
                 </div>
             </main>

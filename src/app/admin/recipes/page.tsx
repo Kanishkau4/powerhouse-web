@@ -9,6 +9,7 @@ import Header from "@/components/admin/Header";
 import DataTable, { Column } from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import { supabase, Recipe } from "@/lib/supabase";
+import { isViewerRole } from "@/lib/auth";
 
 export default function RecipesPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -243,6 +244,7 @@ export default function RecipesPage() {
                         }}
                         onRefresh={fetchRecipes}
                         searchPlaceholder="Search recipes..."
+                        readOnly={isViewerRole()}
                     />
                 </div>
             </main>

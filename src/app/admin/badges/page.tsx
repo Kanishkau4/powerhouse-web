@@ -9,6 +9,7 @@ import Header from "@/components/admin/Header";
 import DataTable, { Column } from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import { supabase, Badge } from "@/lib/supabase";
+import { isViewerRole } from "@/lib/auth";
 
 export default function BadgesPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -175,6 +176,7 @@ export default function BadgesPage() {
                         }}
                         onRefresh={fetchBadges}
                         searchPlaceholder="Search badges..."
+                        readOnly={isViewerRole()}
                     />
                 </div>
             </main>

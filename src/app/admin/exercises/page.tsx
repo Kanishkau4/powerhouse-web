@@ -9,6 +9,7 @@ import Header from "@/components/admin/Header";
 import DataTable, { Column } from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import { supabase, Exercise } from "@/lib/supabase";
+import { isViewerRole } from "@/lib/auth";
 
 export default function ExercisesPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -196,6 +197,7 @@ export default function ExercisesPage() {
                         onDelete={openDeleteModal}
                         onRefresh={fetchExercises}
                         searchPlaceholder="Search exercises..."
+                        readOnly={isViewerRole()}
                     />
                 </div>
             </main>

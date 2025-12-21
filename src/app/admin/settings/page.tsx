@@ -1,14 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Save, Database, Shield, Bell, Palette } from "lucide-react";
 import toast from "react-hot-toast";
 import Sidebar from "@/components/admin/Sidebar";
 import Header from "@/components/admin/Header";
+import { getCurrentAdmin, updateAdminProfile, isViewerRole } from "@/lib/auth";
 
 export default function SettingsPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [activeTab, setActiveTab] = useState("general");
+    const [isViewer, setIsViewer] = useState(false);
+    const [profileData, setProfileData] = useState({
+        username: "",
+        email: "",
+        password: ""
+    });
+
+    useEffect(() => {
+        const loadAdmin = async () => {
+            const admin = await getCurrentAdmin();
+            if (admin) {
+                setProfileData({
+                    username: admin.username,
+                    email: admin.email,
+                    password: ""
+                });
+            }
+            setIsViewer(isViewerRole());
+        };
+        loadAdmin();
+    }, []);
+
+    const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setProfileData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleProfileSave = async () => {
+        if (isViewer) {
+            toast.error("Viewer account cannot perform this action");
+            return;
+        }
+
+        try {
+            await updateAdminProfile(profileData);
+            toast.success("Profile updated successfully!");
+            setProfileData(prev => ({ ...prev, password: "" }));
+        } catch (error: any) {
+            toast.error(error.message || "Failed to update profile");
+        }
+    };
 
     const handleSave = () => {
         toast.success("Settings saved successfully!");
@@ -27,6 +69,12 @@ export default function SettingsPage() {
                             onClick={() => setActiveTab("general")}
                         >
                             General
+                        </button>
+                        <button
+                            className={`admin-tab ${activeTab === "profile" ? "active" : ""}`}
+                            onClick={() => setActiveTab("profile")}
+                        >
+                            Profile
                         </button>
                         <button
                             className={`admin-tab ${activeTab === "database" ? "active" : ""}`}
@@ -80,6 +128,47 @@ export default function SettingsPage() {
                                             />
                                         </div>
                                     </div>
+                                </div>
+                            )}
+
+                            {activeTab === "profile" && (
+                                <div className="admin-form">
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Username</label>
+                                        <input
+                                            type="text"
+                                            name="username"
+                                            className="admin-form-input"
+                                            value={profileData.username}
+                                            onChange={handleProfileChange}
+                                        />
+                                    </div>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Email Address</label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            className="admin-form-input"
+                                            value={profileData.email}
+                                            onChange={handleProfileChange}
+                                        />
+                                    </div>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">New Password (leave blank to keep current)</label>
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            className="admin-form-input"
+                                            value={profileData.password}
+                                            onChange={handleProfileChange}
+                                            placeholder="••••••••"
+                                        />
+                                    </div>
+                                    {isViewer && (
+                                        <p style={{ color: "#ef4444", fontSize: "0.875rem", marginTop: "8px" }}>
+                                            ⚠️ Viewer account cannot modify profile settings.
+                                        </p>
+                                    )}
                                 </div>
                             )}
 
@@ -177,9 +266,13 @@ export default function SettingsPage() {
                             )}
 
                             <div style={{ marginTop: "32px", display: "flex", justifyContent: "flex-end" }}>
-                                <button className="admin-btn admin-btn-primary" onClick={handleSave}>
+                                <button
+                                    className="admin-btn admin-btn-primary"
+                                    onClick={activeTab === 'profile' ? handleProfileSave : handleSave}
+                                    disabled={activeTab === 'profile' && isViewer}
+                                >
                                     <Save size={18} />
-                                    Save Changes
+                                    {activeTab === 'profile' ? 'Update Profile' : 'Save Changes'}
                                 </button>
                             </div>
                         </div>

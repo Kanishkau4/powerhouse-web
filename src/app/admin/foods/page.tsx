@@ -9,6 +9,7 @@ import Header from "@/components/admin/Header";
 import DataTable from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import { supabase, Food } from "@/lib/supabase";
+import { isViewerRole } from "@/lib/auth";
 
 export default function FoodsPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -233,6 +234,7 @@ export default function FoodsPage() {
                         onDelete={openDeleteModal}
                         onRefresh={fetchFoods}
                         searchPlaceholder="Search foods..."
+                        readOnly={isViewerRole()}
                     />
                 </div>
             </main>

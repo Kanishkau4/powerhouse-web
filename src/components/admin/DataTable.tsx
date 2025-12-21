@@ -32,6 +32,7 @@ export interface DataTableProps<T> {
     searchPlaceholder?: string;
     title?: string;
     itemsPerPage?: number;
+    readOnly?: boolean; // Hide edit/delete buttons for viewer role
 }
 
 export default function DataTable<T>({
@@ -46,6 +47,7 @@ export default function DataTable<T>({
     searchPlaceholder = "Search...",
     title,
     itemsPerPage = 10,
+    readOnly = false,
 }: DataTableProps<T>) {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -218,7 +220,7 @@ export default function DataTable<T>({
                         </button>
                     )}
 
-                    {onAdd && (
+                    {onAdd && !readOnly && (
                         <button className="admin-btn admin-btn-primary" onClick={onAdd}>
                             <Plus size={18} />
                             Add New
@@ -295,7 +297,7 @@ export default function DataTable<T>({
                                                         <Eye size={16} />
                                                     </button>
                                                 )}
-                                                {onEdit && (
+                                                {onEdit && !readOnly && (
                                                     <button
                                                         className="admin-action-btn edit"
                                                         onClick={() => onEdit(item)}
@@ -304,7 +306,7 @@ export default function DataTable<T>({
                                                         <Pencil size={16} />
                                                     </button>
                                                 )}
-                                                {onDelete && (
+                                                {onDelete && !readOnly && (
                                                     <button
                                                         className="admin-action-btn delete"
                                                         onClick={() => onDelete(item)}

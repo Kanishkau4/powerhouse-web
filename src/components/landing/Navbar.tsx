@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Dumbbell } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -28,10 +29,15 @@ export default function Navbar() {
             <div className="nav-wrapper">
                 <nav className={`nav-container ${isScrolled ? "shadow-2xl" : ""}`}>
                     <div className="nav-logo">
-                        <div className="nav-logo-icon">
-                            <Dumbbell className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="nav-logo-text">PowerHouse</span>
+                        <Image
+                            src="/assets/logo1.png"
+                            alt="PowerHouse Logo"
+                            width={180}
+                            height={180}
+                            style={{ objectFit: 'contain' }}
+                        />
+
+                        {/* <span className="nav-logo-text">PowerHouse</span> */}
                     </div>
 
                     <div className="nav-links">

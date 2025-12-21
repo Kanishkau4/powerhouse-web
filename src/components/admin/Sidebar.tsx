@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import {
     LayoutDashboard,
     Users,
@@ -77,12 +78,18 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     return (
         <aside className={`admin-sidebar ${isCollapsed ? "collapsed" : ""}`}>
             {/* Logo */}
-            <div className="admin-logo-area">
-                <div className="admin-logo-icon">
-                    <Dumbbell size={22} />
+            <Link href="/" className="admin-logo-area" style={{ cursor: "pointer", textDecoration: "none" }}>
+                <div className="admin-logo-icon" style={{ background: 'none', boxShadow: 'none' }}>
+                    <Image
+                        src="/assets/logo1.png"
+                        alt="PowerHouse Logo"
+                        width={200}
+                        height={200}
+                        style={{ objectFit: 'contain' }}
+                    />
                 </div>
-                <span className="admin-logo-text">PowerHouse</span>
-            </div>
+                {/* {!isCollapsed && <span className="admin-logo-text">PowerHouse</span>} */}
+            </Link>
 
             {/* Navigation */}
             <nav className="admin-nav">
