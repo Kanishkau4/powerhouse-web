@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Menu, X, Dumbbell } from "lucide-react";
+import Link from "next/link";
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -41,13 +42,21 @@ export default function Navbar() {
                         ))}
                     </div>
 
-                    <a href="#download" className="nav-cta">
-                        Get Started
-                    </a>
+                    {/* Changed from "Get Started" to "Login" - Links to Admin */}
+                    <Link href="/admin" className="nav-cta">
+                        Login
+                    </Link>
 
                     <button
-                        className="md:hidden text-white bg-transparent border-none cursor-pointer"
+                        className="mobile-menu-btn"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        style={{
+                            display: "none",
+                            background: "transparent",
+                            border: "none",
+                            color: "white",
+                            cursor: "pointer",
+                        }}
                     >
                         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
@@ -86,8 +95,8 @@ export default function Navbar() {
                             {link.name}
                         </a>
                     ))}
-                    <a
-                        href="#download"
+                    <Link
+                        href="/admin"
                         onClick={() => setIsMobileMenuOpen(false)}
                         style={{
                             background: "#22c55e",
@@ -99,10 +108,18 @@ export default function Navbar() {
                             marginTop: "16px",
                         }}
                     >
-                        Get Started
-                    </a>
+                        Login
+                    </Link>
                 </div>
             )}
+
+            <style jsx>{`
+        @media (max-width: 768px) {
+          .mobile-menu-btn {
+            display: block !important;
+          }
+        }
+      `}</style>
         </>
     );
 }
