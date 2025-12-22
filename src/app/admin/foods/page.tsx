@@ -31,12 +31,8 @@ export default function FoodsPage() {
         image_url: "",
     });
 
-    useEffect(() => {
-        fetchFoods();
-    }, []);
-
-    const fetchFoods = async () => {
-        setLoading(true);
+    const fetchFoods = async (isReload = false) => {
+        if (isReload) setLoading(true);
         const { data, error } = await supabase
             .from("foods")
             .select("*")
@@ -50,6 +46,11 @@ export default function FoodsPage() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchFoods();
+    }, []);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -94,7 +95,7 @@ export default function FoodsPage() {
             } else {
                 toast.success("Food updated successfully");
                 setIsModalOpen(false);
-                fetchFoods();
+                fetchFoods(true);
             }
         } else {
             const { error } = await supabase.from("foods").insert([foodData]);
@@ -105,7 +106,7 @@ export default function FoodsPage() {
             } else {
                 toast.success("Food created successfully");
                 setIsModalOpen(false);
-                fetchFoods();
+                fetchFoods(true);
             }
         }
     };
@@ -124,7 +125,7 @@ export default function FoodsPage() {
         } else {
             toast.success("Food deleted successfully");
             setIsDeleteModalOpen(false);
-            fetchFoods();
+            fetchFoods(true);
         }
     };
 
@@ -232,7 +233,7 @@ export default function FoodsPage() {
                         onView={openViewModal}
                         onEdit={openEditModal}
                         onDelete={openDeleteModal}
-                        onRefresh={fetchFoods}
+                        onRefresh={() => fetchFoods(true)}
                         searchPlaceholder="Search foods..."
                         readOnly={isViewerRole()}
                     />

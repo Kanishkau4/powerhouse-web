@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Star, Quote } from "lucide-react";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -121,7 +122,14 @@ export default function Testimonials() {
                                 &ldquo;{testimonial.content}&rdquo;
                             </p>
                             <div className="testimonial-author">
-                                <img src={testimonial.avatar} alt={testimonial.name} className="author-avatar" />
+                                <Image
+                                    src={testimonial.avatar}
+                                    alt={testimonial.name}
+                                    width={48}
+                                    height={48}
+                                    className="author-avatar"
+                                    style={{ objectFit: "cover" }}
+                                />
                                 <div>
                                     <div className="author-name">{testimonial.name}</div>
                                     <div className="author-role">{testimonial.role}</div>

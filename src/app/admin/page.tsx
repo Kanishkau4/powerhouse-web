@@ -7,6 +7,7 @@ import {
     Utensils,
     Trophy,
 } from "lucide-react";
+import Image from "next/image";
 import {
     AreaChart,
     Area,
@@ -25,7 +26,7 @@ import {
 import Sidebar from "@/components/admin/Sidebar";
 import Header from "@/components/admin/Header";
 import StatsCard from "@/components/admin/StatsCard";
-import { supabase } from "@/lib/supabase";
+import { supabase, User as DBUser } from "@/lib/supabase";
 import { format, subDays, startOfDay, parseISO } from "date-fns";
 
 // Sample data for charts (Calories - keeping as sample since no logs table exists yet)
@@ -48,6 +49,20 @@ interface DashboardStats {
     activeChallenges: number;
 }
 
+interface UserGrowth {
+    name: string;
+    users: number;
+    workouts: number;
+    [key: string]: string | number;
+}
+
+interface WorkoutTypeDist {
+    name: string;
+    value: number;
+    color: string;
+    [key: string]: string | number;
+}
+
 export default function AdminDashboard() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [stats, setStats] = useState<DashboardStats>({
@@ -56,10 +71,9 @@ export default function AdminDashboard() {
         totalFoods: 0,
         activeChallenges: 0,
     });
-    const [loading, setLoading] = useState(true);
-    const [recentUsers, setRecentUsers] = useState<any[]>([]);
-    const [userGrowthData, setUserGrowthData] = useState<any[]>([]);
-    const [workoutTypeData, setWorkoutTypeData] = useState<any[]>([]);
+    const [recentUsers, setRecentUsers] = useState<DBUser[]>([]);
+    const [userGrowthData, setUserGrowthData] = useState<UserGrowth[]>([]);
+    const [workoutTypeData, setWorkoutTypeData] = useState<WorkoutTypeDist[]>([]);
 
     useEffect(() => {
         fetchDashboardData();
@@ -168,7 +182,7 @@ export default function AdminDashboard() {
         } catch (error) {
             console.error("Error fetching dashboard data:", error);
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
     };
 
@@ -389,10 +403,13 @@ export default function AdminDashboard() {
                                                 <td>
                                                     <div className="admin-table-user">
                                                         {user.profile_picture_url ? (
-                                                            <img
+                                                            <Image
                                                                 src={user.profile_picture_url}
                                                                 alt=""
+                                                                width={40}
+                                                                height={40}
                                                                 className="admin-table-avatar"
+                                                                style={{ objectFit: "cover" }}
                                                             />
                                                         ) : (
                                                             <div

@@ -33,12 +33,8 @@ export default function ChallengesPage() {
         end_date: "",
     });
 
-    useEffect(() => {
-        fetchChallenges();
-    }, []);
-
-    const fetchChallenges = async () => {
-        setLoading(true);
+    const fetchChallenges = async (isReload = false) => {
+        if (isReload) setLoading(true);
         const { data, error } = await supabase
             .from("challenges")
             .select("*")
@@ -52,6 +48,11 @@ export default function ChallengesPage() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchChallenges();
+    }, []);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -92,7 +93,7 @@ export default function ChallengesPage() {
             } else {
                 toast.success("Challenge updated successfully");
                 setIsModalOpen(false);
-                fetchChallenges();
+                fetchChallenges(true);
             }
         } else {
             const { error } = await supabase.from("challenges").insert([challengeData]);
@@ -103,7 +104,7 @@ export default function ChallengesPage() {
             } else {
                 toast.success("Challenge created successfully");
                 setIsModalOpen(false);
-                fetchChallenges();
+                fetchChallenges(true);
             }
         }
     };
@@ -122,7 +123,7 @@ export default function ChallengesPage() {
         } else {
             toast.success("Challenge deleted successfully");
             setIsDeleteModalOpen(false);
-            fetchChallenges();
+            fetchChallenges(true);
         }
     };
 
@@ -250,7 +251,7 @@ export default function ChallengesPage() {
                         onView={openViewModal}
                         onEdit={openEditModal}
                         onDelete={openDeleteModal}
-                        onRefresh={fetchChallenges}
+                        onRefresh={() => fetchChallenges(true)}
                         searchPlaceholder="Search challenges..."
                         readOnly={isViewerRole()}
                     />

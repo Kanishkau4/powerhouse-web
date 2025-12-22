@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Mail, Eye, EyeOff, Zap } from "lucide-react";
+import { Lock, Mail, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 import { signInAdmin, isAdminAuthenticated } from "@/lib/auth";
 import Image from "next/image";
@@ -16,17 +16,17 @@ export default function AdminLoginPage() {
     const [loading, setLoading] = useState(false);
     const [checking, setChecking] = useState(true);
 
-    useEffect(() => {
-        checkAuth();
-    }, []);
-
-    const checkAuth = async () => {
+    const checkAuth = useCallback(async () => {
         const isAuth = await isAdminAuthenticated();
         if (isAuth) {
             router.push("/admin");
         }
         setChecking(false);
-    };
+    }, [router]);
+
+    useEffect(() => {
+        checkAuth();
+    }, [checkAuth]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -36,9 +36,10 @@ export default function AdminLoginPage() {
             await signInAdmin(email, password);
             toast.success("Welcome back, Admin!");
             router.push("/admin");
-        } catch (error: any) {
-            console.error("Login error:", error);
-            toast.error(error.message || "Invalid credentials. Please try again.");
+        } catch (error) {
+            const err = error as Error;
+            console.error("Login error:", err);
+            toast.error(err.message || "Invalid credentials. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -377,7 +378,7 @@ export default function AdminLoginPage() {
                         color: "#64748b",
                         textAlign: "center"
                     }}>
-                        Don't have an account? <strong style={{
+                        {"Don't"} have an account? <strong style={{
                             background: "linear-gradient(135deg, #22c55e, #4ade80)",
                             WebkitBackgroundClip: "text",
                             WebkitTextFillColor: "transparent",

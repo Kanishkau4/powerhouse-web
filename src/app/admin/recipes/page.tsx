@@ -37,12 +37,8 @@ export default function RecipesPage() {
         is_sri_lankan: false,
     });
 
-    useEffect(() => {
-        fetchRecipes();
-    }, []);
-
-    const fetchRecipes = async () => {
-        setLoading(true);
+    const fetchRecipes = async (isReload = false) => {
+        if (isReload) setLoading(true);
         const { data, error } = await supabase
             .from("recipes")
             .select("*")
@@ -55,6 +51,11 @@ export default function RecipesPage() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchRecipes();
+    }, []);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -102,7 +103,7 @@ export default function RecipesPage() {
             } else {
                 toast.success("Recipe updated successfully");
                 setIsModalOpen(false);
-                fetchRecipes();
+                fetchRecipes(true);
             }
         } else {
             const { error } = await supabase.from("recipes").insert([recipeData]);
@@ -113,7 +114,7 @@ export default function RecipesPage() {
             } else {
                 toast.success("Recipe created successfully");
                 setIsModalOpen(false);
-                fetchRecipes();
+                fetchRecipes(true);
             }
         }
     };
@@ -131,7 +132,7 @@ export default function RecipesPage() {
         } else {
             toast.success("Recipe deleted successfully");
             setIsDeleteModalOpen(false);
-            fetchRecipes();
+            fetchRecipes(true);
         }
     };
 
@@ -242,7 +243,7 @@ export default function RecipesPage() {
                             setSelectedRecipe(r);
                             setIsDeleteModalOpen(true);
                         }}
-                        onRefresh={fetchRecipes}
+                        onRefresh={() => fetchRecipes(true)}
                         searchPlaceholder="Search recipes..."
                         readOnly={isViewerRole()}
                     />

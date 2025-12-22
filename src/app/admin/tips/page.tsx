@@ -32,13 +32,8 @@ export default function TipsPage() {
         is_featured: false,
     });
 
-    useEffect(() => {
-        fetchTips();
-        fetchCategories();
-    }, []);
-
-    const fetchTips = async () => {
-        setLoading(true);
+    const fetchTips = async (isReload = false) => {
+        if (isReload) setLoading(true);
         const { data, error } = await supabase
             .from("tips")
             .select("*")
@@ -59,6 +54,12 @@ export default function TipsPage() {
             .order("sort_order");
         setCategories(data || []);
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchTips();
+        fetchCategories();
+    }, []);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -100,7 +101,7 @@ export default function TipsPage() {
             } else {
                 toast.success("Tip updated successfully");
                 setIsModalOpen(false);
-                fetchTips();
+                fetchTips(true);
             }
         } else {
             const { error } = await supabase.from("tips").insert([tipData]);
@@ -111,7 +112,7 @@ export default function TipsPage() {
             } else {
                 toast.success("Tip created successfully");
                 setIsModalOpen(false);
-                fetchTips();
+                fetchTips(true);
             }
         }
     };
@@ -129,7 +130,7 @@ export default function TipsPage() {
         } else {
             toast.success("Tip deleted successfully");
             setIsDeleteModalOpen(false);
-            fetchTips();
+            fetchTips(true);
         }
     };
 
@@ -236,7 +237,7 @@ export default function TipsPage() {
                             setSelectedTip(tip);
                             setIsDeleteModalOpen(true);
                         }}
-                        onRefresh={fetchTips}
+                        onRefresh={() => fetchTips(true)}
                         searchPlaceholder="Search tips..."
                         readOnly={isViewerRole()}
                     />

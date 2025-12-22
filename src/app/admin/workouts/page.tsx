@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Upload, X } from "lucide-react";
+import { X } from "lucide-react";
 import Image from "next/image";
 import Sidebar from "@/components/admin/Sidebar";
 import Header from "@/components/admin/Header";
@@ -30,12 +30,8 @@ export default function WorkoutsPage() {
         image_url: "",
     });
 
-    useEffect(() => {
-        fetchWorkouts();
-    }, []);
-
-    const fetchWorkouts = async () => {
-        setLoading(true);
+    const fetchWorkouts = async (isReload = false) => {
+        if (isReload) setLoading(true);
         const { data, error } = await supabase
             .from("workouts")
             .select("*")
@@ -49,6 +45,11 @@ export default function WorkoutsPage() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchWorkouts();
+    }, []);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -90,7 +91,7 @@ export default function WorkoutsPage() {
             } else {
                 toast.success("Workout updated successfully");
                 setIsModalOpen(false);
-                fetchWorkouts();
+                fetchWorkouts(true);
             }
         } else {
             const { error } = await supabase.from("workouts").insert([workoutData]);
@@ -101,7 +102,7 @@ export default function WorkoutsPage() {
             } else {
                 toast.success("Workout created successfully");
                 setIsModalOpen(false);
-                fetchWorkouts();
+                fetchWorkouts(true);
             }
         }
     };
@@ -120,7 +121,7 @@ export default function WorkoutsPage() {
         } else {
             toast.success("Workout deleted successfully");
             setIsDeleteModalOpen(false);
-            fetchWorkouts();
+            fetchWorkouts(true);
         }
     };
 
@@ -239,7 +240,7 @@ export default function WorkoutsPage() {
                         onView={openViewModal}
                         onEdit={openEditModal}
                         onDelete={openDeleteModal}
-                        onRefresh={fetchWorkouts}
+                        onRefresh={() => fetchWorkouts(true)}
                         searchPlaceholder="Search workouts..."
                         readOnly={isViewerRole()}
                     />

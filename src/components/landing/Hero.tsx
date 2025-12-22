@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, type MotionStyle } from "framer-motion";
 import { Apple, Play, Activity, Utensils, Zap, Trophy } from "lucide-react";
 import Image from "next/image";
 
@@ -160,7 +160,7 @@ export default function Hero({ phoneImage }: HeroProps) {
 }
 
 interface TransactionCardProps {
-    style: any;
+    style: MotionStyle;
     icon: React.ReactNode;
     label: string;
     value: string;

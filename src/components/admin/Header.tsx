@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Search, Bell, ChevronDown, Menu, LogOut, User } from "lucide-react";
 import toast from "react-hot-toast";
@@ -20,7 +20,17 @@ export default function Header({ title, subtitle, onMenuClick }: HeaderProps) {
     const [adminRole, setAdminRole] = useState<'admin' | 'viewer'>('admin');
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    const loadAdminInfo = useCallback(async () => {
+        const admin = await getCurrentAdmin();
+        if (admin) {
+            setAdminEmail(admin.email);
+            setAdminUsername(admin.username);
+            setAdminRole(admin.role);
+        }
+    }, []);
+
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadAdminInfo();
 
         // Close dropdown when clicking outside
@@ -32,16 +42,7 @@ export default function Header({ title, subtitle, onMenuClick }: HeaderProps) {
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    const loadAdminInfo = async () => {
-        const admin = await getCurrentAdmin();
-        if (admin) {
-            setAdminEmail(admin.email);
-            setAdminUsername(admin.username);
-            setAdminRole(admin.role);
-        }
-    };
+    }, [loadAdminInfo]);
 
     const handleLogout = async () => {
         try {

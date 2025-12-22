@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Database, Shield, Bell, Palette } from "lucide-react";
+import { Save, Database } from "lucide-react";
 import toast from "react-hot-toast";
 import Sidebar from "@/components/admin/Sidebar";
 import Header from "@/components/admin/Header";
@@ -47,8 +47,9 @@ export default function SettingsPage() {
             await updateAdminProfile(profileData);
             toast.success("Profile updated successfully!");
             setProfileData(prev => ({ ...prev, password: "" }));
-        } catch (error: any) {
-            toast.error(error.message || "Failed to update profile");
+        } catch (error) {
+            const err = error as Error;
+            toast.error(err.message || "Failed to update profile");
         }
     };
 

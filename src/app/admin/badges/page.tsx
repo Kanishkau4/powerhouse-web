@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { X } from "lucide-react";
 import Image from "next/image";
 import Sidebar from "@/components/admin/Sidebar";
 import Header from "@/components/admin/Header";
@@ -27,12 +26,8 @@ export default function BadgesPage() {
         requirement_description: "",
     });
 
-    useEffect(() => {
-        fetchBadges();
-    }, []);
-
-    const fetchBadges = async () => {
-        setLoading(true);
+    const fetchBadges = async (isReload = false) => {
+        if (isReload) setLoading(true);
         const { data, error } = await supabase
             .from("badges")
             .select("*")
@@ -45,6 +40,11 @@ export default function BadgesPage() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchBadges();
+    }, []);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -77,7 +77,7 @@ export default function BadgesPage() {
             } else {
                 toast.success("Badge updated successfully");
                 setIsModalOpen(false);
-                fetchBadges();
+                fetchBadges(true);
             }
         } else {
             const { error } = await supabase.from("badges").insert([badgeData]);
@@ -87,7 +87,7 @@ export default function BadgesPage() {
             } else {
                 toast.success("Badge created successfully");
                 setIsModalOpen(false);
-                fetchBadges();
+                fetchBadges(true);
             }
         }
     };
@@ -105,7 +105,7 @@ export default function BadgesPage() {
         } else {
             toast.success("Badge deleted successfully");
             setIsDeleteModalOpen(false);
-            fetchBadges();
+            fetchBadges(true);
         }
     };
 
@@ -174,7 +174,7 @@ export default function BadgesPage() {
                             setSelectedBadge(badge);
                             setIsDeleteModalOpen(true);
                         }}
-                        onRefresh={fetchBadges}
+                        onRefresh={() => fetchBadges(true)}
                         searchPlaceholder="Search badges..."
                         readOnly={isViewerRole()}
                     />

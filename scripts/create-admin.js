@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Admin User Setup Script
  * 
@@ -56,7 +57,7 @@ async function createAdminUser() {
                 if (adminError.message.includes('already registered')) {
                     console.log('⚠️  User already exists, ensuring email is confirmed...');
                     // Get user ID to update
-                    const { data: users, error: listError } = await supabase.auth.admin.listUsers();
+                    const { data: users } = await supabase.auth.admin.listUsers();
                     const existingAuthUser = users?.users.find(u => u.email === ADMIN_EMAIL);
 
                     if (existingAuthUser) {

@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { X } from "lucide-react";
-import Image from "next/image";
 import Sidebar from "@/components/admin/Sidebar";
 import Header from "@/components/admin/Header";
 import DataTable, { Column } from "@/components/admin/DataTable";
@@ -27,12 +25,8 @@ export default function ExercisesPage() {
         muscle_group_targeted: "",
     });
 
-    useEffect(() => {
-        fetchExercises();
-    }, []);
-
-    const fetchExercises = async () => {
-        setLoading(true);
+    const fetchExercises = async (isReload = false) => {
+        if (isReload) setLoading(true);
         const { data, error } = await supabase
             .from("exercises")
             .select("*")
@@ -46,6 +40,11 @@ export default function ExercisesPage() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchExercises();
+    }, []);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -76,7 +75,7 @@ export default function ExercisesPage() {
             } else {
                 toast.success("Exercise updated successfully");
                 setIsModalOpen(false);
-                fetchExercises();
+                fetchExercises(true);
             }
         } else {
             const { error } = await supabase.from("exercises").insert([exerciseData]);
@@ -86,7 +85,7 @@ export default function ExercisesPage() {
             } else {
                 toast.success("Exercise created successfully");
                 setIsModalOpen(false);
-                fetchExercises();
+                fetchExercises(true);
             }
         }
     };
@@ -104,7 +103,7 @@ export default function ExercisesPage() {
         } else {
             toast.success("Exercise deleted successfully");
             setIsDeleteModalOpen(false);
-            fetchExercises();
+            fetchExercises(true);
         }
     };
 
@@ -195,7 +194,7 @@ export default function ExercisesPage() {
                         onView={openViewModal}
                         onEdit={openEditModal}
                         onDelete={openDeleteModal}
-                        onRefresh={fetchExercises}
+                        onRefresh={() => fetchExercises(true)}
                         searchPlaceholder="Search exercises..."
                         readOnly={isViewerRole()}
                     />

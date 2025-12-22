@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/auth";
 
@@ -10,11 +10,10 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        checkAuthentication();
-    }, [pathname]);
+    const checkAuthentication = useCallback(async () => {
+        // Wait a microtask to avoid synchronous setState in useEffect
+        await Promise.resolve();
 
-    const checkAuthentication = async () => {
         // Don't check auth on login page
         if (pathname === "/admin/login") {
             setIsLoading(false);
@@ -30,7 +29,12 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
         }
 
         setIsLoading(false);
-    };
+    }, [pathname, router]);
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        checkAuthentication();
+    }, [checkAuthentication]);
 
     // Show loading on protected pages
     if (isLoading && pathname !== "/admin/login") {

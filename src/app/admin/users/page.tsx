@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import Image from "next/image";
 import Sidebar from "@/components/admin/Sidebar";
 import Header from "@/components/admin/Header";
 import DataTable, { Column } from "@/components/admin/DataTable";
@@ -30,12 +31,8 @@ export default function UsersPage() {
         level: "1",
     });
 
-    useEffect(() => {
-        fetchUsers();
-    }, []);
-
-    const fetchUsers = async () => {
-        setLoading(true);
+    const fetchUsers = async (isReload = false) => {
+        if (isReload) setLoading(true);
 
         let adminEmails: string[] = ['test@powerhouse.local', 'admin@powerhouse.com']
 
@@ -45,7 +42,7 @@ export default function UsersPage() {
             if (!authError && authUsers) {
                 adminEmails = [...adminEmails, ...authUsers.users.map(u => u.email).filter((e): e is string => !!e)]
             }
-        } catch (err) {
+        } catch {
             console.log("Note: Could not list auth users directly, using fallback filtering.")
         }
 
@@ -72,6 +69,11 @@ export default function UsersPage() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchUsers();
+    }, []);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -255,7 +257,7 @@ export default function UsersPage() {
                         onView={openViewModal}
                         onEdit={openEditModal}
                         onDelete={openDeleteModal}
-                        onRefresh={fetchUsers}
+                        onRefresh={() => fetchUsers(true)}
                         searchPlaceholder="Search users..."
                         readOnly={isViewerRole()}
                     />
@@ -438,12 +440,12 @@ export default function UsersPage() {
                             }}
                         >
                             {selectedUser.profile_picture_url ? (
-                                <img
+                                <Image
                                     src={selectedUser.profile_picture_url}
                                     alt=""
+                                    width={80}
+                                    height={80}
                                     style={{
-                                        width: "80px",
-                                        height: "80px",
                                         borderRadius: "50%",
                                         objectFit: "cover",
                                     }}

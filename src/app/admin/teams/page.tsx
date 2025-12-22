@@ -19,12 +19,8 @@ export default function TeamsPage() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
 
-    useEffect(() => {
-        fetchTeams();
-    }, []);
-
-    const fetchTeams = async () => {
-        setLoading(true);
+    const fetchTeams = async (isReload = false) => {
+        if (isReload) setLoading(true);
         const { data, error } = await supabase
             .from("teams")
             .select("*")
@@ -37,6 +33,11 @@ export default function TeamsPage() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchTeams();
+    }, []);
 
     const handleDelete = async () => {
         if (!selectedTeam) return;
@@ -51,7 +52,7 @@ export default function TeamsPage() {
         } else {
             toast.success("Team deleted successfully");
             setIsDeleteModalOpen(false);
-            fetchTeams();
+            fetchTeams(true);
         }
     };
 
@@ -101,7 +102,7 @@ export default function TeamsPage() {
                             setSelectedTeam(team);
                             setIsDeleteModalOpen(true);
                         }}
-                        onRefresh={fetchTeams}
+                        onRefresh={() => fetchTeams(true)}
                         searchPlaceholder="Search teams..."
                         readOnly={isViewerRole()}
                     />

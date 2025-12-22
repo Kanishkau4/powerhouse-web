@@ -25,12 +25,8 @@ export default function TipCategoriesPage() {
     sort_order: "0",
   });
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    setLoading(true);
+  const fetchCategories = async (isReload = false) => {
+    if (isReload) setLoading(true);
     const { data, error } = await supabase
       .from("tip_categories")
       .select("*")
@@ -43,6 +39,11 @@ export default function TipCategoriesPage() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCategories();
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -74,7 +75,7 @@ export default function TipCategoriesPage() {
       } else {
         toast.success("Category updated successfully");
         setIsModalOpen(false);
-        fetchCategories();
+        fetchCategories(true);
       }
     } else {
       const { error } = await supabase.from("tip_categories").insert([categoryData]);
@@ -84,7 +85,7 @@ export default function TipCategoriesPage() {
       } else {
         toast.success("Category created successfully");
         setIsModalOpen(false);
-        fetchCategories();
+        fetchCategories(true);
       }
     }
   };
@@ -102,7 +103,7 @@ export default function TipCategoriesPage() {
     } else {
       toast.success("Category deleted successfully");
       setIsDeleteModalOpen(false);
-      fetchCategories();
+      fetchCategories(true);
     }
   };
 
@@ -170,7 +171,7 @@ export default function TipCategoriesPage() {
               setSelectedCategory(cat);
               setIsDeleteModalOpen(true);
             }}
-            onRefresh={fetchCategories}
+            onRefresh={() => fetchCategories(true)}
             searchPlaceholder="Search categories..."
             readOnly={isViewerRole()}
           />

@@ -195,7 +195,7 @@ export async function updateAdminProfile(updates: {
 
     // Update in users table
     if (updates.username || updates.email) {
-        const updateData: any = {}
+        const updateData: Record<string, string> = {}
         if (updates.username) updateData.username = updates.username
         if (updates.email) updateData.email = updates.email
 
