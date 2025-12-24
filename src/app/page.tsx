@@ -1,4 +1,3 @@
-import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import Features from "@/components/landing/Features";
 import AIDemo from "@/components/landing/AIDemo";
@@ -9,8 +8,6 @@ import Footer from "@/components/landing/Footer";
 export default function Home() {
   return (
     <main>
-      <Navbar />
-
       {/* 
         To add your own phone screenshot:
         1. Place your image in the /public folder (e.g., /public/app-screenshot.png)
