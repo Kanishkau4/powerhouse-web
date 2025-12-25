@@ -13,6 +13,7 @@ import { isViewerRole } from "@/lib/auth";
 
 export default function FoodsPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [foods, setFoods] = useState<Food[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -218,11 +219,29 @@ export default function FoodsPage() {
         },
     ];
 
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
+
     return (
         <>
-            <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+            {/* Mobile Overlay */}
+            <div
+                className={`admin-mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}
+                onClick={closeMobileMenu}
+            />
+
+            <Sidebar
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
+                isMobileMenuOpen={isMobileMenuOpen}
+            />
             <main className={`admin-main ${isCollapsed ? "expanded" : ""}`}>
-                <Header title="Foods" subtitle="Manage food items and nutritional data" />
+                <Header title="Foods" subtitle="Manage food items and nutritional data" onMenuClick={toggleMobileMenu} />
 
                 <div className="admin-content">
                     <DataTable

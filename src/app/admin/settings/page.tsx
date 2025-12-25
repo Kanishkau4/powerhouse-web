@@ -9,6 +9,7 @@ import { getCurrentAdmin, updateAdminProfile, isViewerRole } from "@/lib/auth";
 
 export default function SettingsPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("general");
     const [isViewer, setIsViewer] = useState(false);
     const [profileData, setProfileData] = useState({
@@ -57,11 +58,29 @@ export default function SettingsPage() {
         toast.success("Settings saved successfully!");
     };
 
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
+
     return (
         <>
-            <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+            {/* Mobile Overlay */}
+            <div
+                className={`admin-mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}
+                onClick={closeMobileMenu}
+            />
+
+            <Sidebar
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
+                isMobileMenuOpen={isMobileMenuOpen}
+            />
             <main className={`admin-main ${isCollapsed ? "expanded" : ""}`}>
-                <Header title="Settings" subtitle="Configure your admin dashboard" />
+                <Header title="Settings" subtitle="Configure your admin dashboard" onMenuClick={toggleMobileMenu} />
 
                 <div className="admin-content">
                     <div className="admin-tabs">

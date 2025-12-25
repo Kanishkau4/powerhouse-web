@@ -13,6 +13,7 @@ import { isViewerRole } from "@/lib/auth";
 
 export default function WorkoutsPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [workouts, setWorkouts] = useState<Workout[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -222,13 +223,32 @@ export default function WorkoutsPage() {
         },
     ];
 
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
+
     return (
         <>
-            <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+            {/* Mobile Overlay */}
+            <div
+                className={`admin-mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}
+                onClick={closeMobileMenu}
+            />
+
+            <Sidebar
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
+                isMobileMenuOpen={isMobileMenuOpen}
+            />
             <main className={`admin-main ${isCollapsed ? "expanded" : ""}`}>
                 <Header
                     title="Workouts"
                     subtitle="Manage workout programs and routines"
+                    onMenuClick={toggleMobileMenu}
                 />
 
                 <div className="admin-content">

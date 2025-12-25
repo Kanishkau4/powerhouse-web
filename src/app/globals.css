@@ -174,7 +174,7 @@ body {
   position: absolute;
   top: 15%;
   text-align: center;
-  z-index: 1;
+  z-index: 20;
   width: 100%;
   max-width: 900px;
   padding: 0 20px;
@@ -214,15 +214,49 @@ body {
   border-radius: 16px;
   text-decoration: none;
   font-weight: 600;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
 .store-button:hover {
-  transform: scale(1.05);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(34, 197, 94, 0.3);
+}
+
+.liquid-button .liquid {
+  position: absolute;
+  top: 100%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: #22c55e;
+  z-index: 0;
+  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+  border-radius: 42%;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.2);
+}
+
+.liquid-button:hover .liquid {
+  transform: translateY(-88%) rotate(360deg);
+}
+
+.liquid-button:hover {
+  color: #FFFFFF;
+  border-color: #22c55e;
 }
 
 .store-button-text {
   text-align: left;
+  position: relative;
+  z-index: 2;
+}
+
+.store-button svg {
+  position: relative;
+  z-index: 2;
 }
 
 .store-button-text span {
@@ -237,6 +271,34 @@ body {
   font-size: 0.95rem;
 }
 
+/* Footer specific store button inherited from store-button but with black bg by default */
+.footer-store-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FFFFFF;
+  color: #000000;
+  padding: 16px 32px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.footer-store-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(34, 197, 94, 0.3);
+}
+
+.footer-store-button:hover {
+  color: #FFFFFF;
+  border-color: #22c55e;
+}
+
 /* ===== PHONE SCENE & TRANSACTION CARDS ===== */
 .phone-scene {
   position: relative;
@@ -247,23 +309,46 @@ body {
   align-items: center;
   justify-content: center;
   margin-top: 400px;
-  /* Pushed down more to start under text */
-  z-index: 10;
+  z-index: 25;
   perspective: 2000px;
+  pointer-events: none;
+  /* Allows clicks to pass through to buttons below */
 }
 
 .phone-mockup-new {
   width: 300px;
-  /* Reduced from 340px */
   height: 600px;
-  /* Reduced from 680px */
-  background: #0a0a0a;
-  border: 12px solid #1a1a1a;
+  background: #000000 !important;
+  border: 12px solid #0a0a0a;
   border-radius: 48px;
   position: relative;
-  box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  z-index: 5;
-  overflow: hidden;
+  box-shadow: 0 50px 100px rgba(0, 0, 0, 1),
+    0 0 0 2px rgba(255, 255, 255, 0.2);
+  z-index: 10;
+  /* Removed overflow: hidden to prevent clipping of solid backdrop layers */
+  opacity: 1 !important;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.phone-mockup-new::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: #000000;
+  z-index: -2;
+  border-radius: 50px;
+  opacity: 1 !important;
+}
+
+.phone-mockup-new::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, rgba(26, 26, 26, 1), rgba(10, 10, 10, 1));
+  z-index: -1;
+  border-radius: 36px;
+  opacity: 1;
 }
 
 .hero-transaction-card {
@@ -350,6 +435,19 @@ body {
   height: 100%;
   position: relative;
   overflow: hidden;
+  z-index: 1;
+  background: #000000;
+  border-radius: 36px;
+  opacity: 1 !important;
+}
+
+.phone-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #111111 0%, #0a0a0a 100%);
+  z-index: -1;
+  opacity: 1;
 }
 
 .phone-screen-image {
@@ -357,6 +455,8 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: top;
+  position: relative;
+  z-index: 1;
 }
 
 .phone-screen-placeholder {
@@ -1385,7 +1485,7 @@ body {
   }
 
   .phone-scene {
-    margin-top: 120px;
+    margin-top: 280px;
     height: 450px;
   }
 
@@ -1548,7 +1648,7 @@ body {
   }
 
   .phone-scene {
-    margin-top: 80px;
+    margin-top: 420px;
     height: 380px;
   }
 

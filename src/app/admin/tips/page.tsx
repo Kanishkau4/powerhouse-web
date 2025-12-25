@@ -13,6 +13,7 @@ import { isViewerRole } from "@/lib/auth";
 
 export default function TipsPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [tips, setTips] = useState<Tip[]>([]);
     const [categories, setCategories] = useState<TipCategory[]>([]);
     const [loading, setLoading] = useState(true);
@@ -216,11 +217,29 @@ export default function TipsPage() {
         { key: "reading_time", label: "Read Time", render: (tip) => `${tip.reading_time} min` },
     ];
 
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
+
     return (
         <>
-            <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+            {/* Mobile Overlay */}
+            <div
+                className={`admin-mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}
+                onClick={closeMobileMenu}
+            />
+
+            <Sidebar
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
+                isMobileMenuOpen={isMobileMenuOpen}
+            />
             <main className={`admin-main ${isCollapsed ? "expanded" : ""}`}>
-                <Header title="Tips" subtitle="Manage fitness tips and articles" />
+                <Header title="Tips" subtitle="Manage fitness tips and articles" onMenuClick={toggleMobileMenu} />
 
                 <div className="admin-content">
                     <DataTable

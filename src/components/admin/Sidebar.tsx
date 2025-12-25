@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -23,6 +25,7 @@ import {
 interface SidebarProps {
     isCollapsed: boolean;
     setIsCollapsed: (collapsed: boolean) => void;
+    isMobileMenuOpen?: boolean;
 }
 
 const navSections = [
@@ -65,7 +68,7 @@ const navSections = [
     },
 ];
 
-export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
+export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileMenuOpen = false }: SidebarProps) {
     const pathname = usePathname();
 
     const isActive = (href: string) => {
@@ -75,20 +78,26 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         return pathname.startsWith(href);
     };
 
+    useEffect(() => {
+        const savedState = localStorage.getItem("sidebar_collapsed");
+        if (savedState === "true") {
+            setIsCollapsed(true);
+        }
+    }, [setIsCollapsed]);
+
     return (
-        <aside className={`admin-sidebar ${isCollapsed ? "collapsed" : ""}`}>
+        <aside className={`admin-sidebar ${isCollapsed ? "collapsed" : ""} ${isMobileMenuOpen ? "open" : ""}`}>
             {/* Logo */}
             <Link href="/" className="admin-logo-area" style={{ cursor: "pointer", textDecoration: "none" }}>
                 <div className="admin-logo-icon" style={{ background: 'none', boxShadow: 'none' }}>
                     <Image
-                        src="/assets/logo1.png"
+                        src={isCollapsed ? "/assets/arm-icon.png" : "/assets/logo1.png"}
                         alt="PowerHouse Logo"
                         width={200}
                         height={200}
                         style={{ objectFit: 'contain' }}
                     />
                 </div>
-                {/* {!isCollapsed && <span className="admin-logo-text">PowerHouse</span>} */}
             </Link>
 
             {/* Navigation */}
@@ -124,7 +133,11 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             <div className="admin-sidebar-footer">
                 <button
                     className="admin-collapse-btn"
-                    onClick={() => setIsCollapsed(!isCollapsed)}
+                    onClick={() => {
+                        const newState = !isCollapsed;
+                        setIsCollapsed(newState);
+                        localStorage.setItem("sidebar_collapsed", String(newState));
+                    }}
                 >
                     {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
                     <span>Collapse</span>

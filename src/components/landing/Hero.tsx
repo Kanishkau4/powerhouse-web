@@ -60,7 +60,7 @@ export default function Hero({ phoneImage }: HeroProps) {
                 {/* Background Text (Phone moves over this) */}
                 <motion.div
                     className="hero-text-container"
-                    style={{ y: textY, opacity: textOpacity }}
+                    style={{ y: textY, opacity: textOpacity, pointerEvents: 'auto' }}
                 >
                     <h1 className="hero-title">
                         Your AI Fitness
@@ -73,19 +73,13 @@ export default function Hero({ phoneImage }: HeroProps) {
                     </p>
 
                     <div className="store-buttons">
-                        <a href="#" className="store-button">
-                            <Apple size={28} />
+                        <a href="YOUR_APK_LINK_HERE" className="store-button liquid-button">
+                            <Zap size={28} fill="currentColor" />
                             <div className="store-button-text">
-                                <span>Download on the</span>
-                                <strong>App Store</strong>
+                                <span>Get the App</span>
+                                <strong>Download APK</strong>
                             </div>
-                        </a>
-                        <a href="#" className="store-button">
-                            <Play size={28} fill="black" />
-                            <div className="store-button-text">
-                                <span>Get it on</span>
-                                <strong>Google Play</strong>
-                            </div>
+                            <div className="liquid"></div>
                         </a>
                     </div>
                 </motion.div>

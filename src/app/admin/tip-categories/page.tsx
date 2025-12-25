@@ -11,6 +11,7 @@ import { isViewerRole } from "@/lib/auth";
 
 export default function TipCategoriesPage() {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [categories, setCategories] = useState<TipCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -154,11 +155,29 @@ export default function TipCategoriesPage() {
     { key: "sort_order", label: "Order", sortable: true },
   ];
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <>
-      <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+      {/* Mobile Overlay */}
+      <div
+        className={`admin-mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}
+        onClick={closeMobileMenu}
+      />
+
+      <Sidebar
+        isCollapsed={isCollapsed}
+        setIsCollapsed={setIsCollapsed}
+        isMobileMenuOpen={isMobileMenuOpen}
+      />
       <main className={`admin-main ${isCollapsed ? "expanded" : ""}`}>
-        <Header title="Tip Categories" subtitle="Manage tip categories" />
+        <Header title="Tip Categories" subtitle="Manage tip categories" onMenuClick={toggleMobileMenu} />
 
         <div className="admin-content">
           <DataTable

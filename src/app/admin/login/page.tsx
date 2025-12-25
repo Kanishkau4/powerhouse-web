@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Mail, Eye, EyeOff } from "lucide-react";
+import { Lock, Mail, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import { signInAdmin, isAdminAuthenticated } from "@/lib/auth";
 import Image from "next/image";
@@ -77,8 +77,44 @@ export default function AdminLoginPage() {
             justifyContent: "center",
             background: "radial-gradient(circle at top right, #1e293b, #0f172a)"
         }}>
+            {/* Back Button */}
+            <Link
+                href="/"
+                className="back-button"
+                style={{
+                    position: "absolute",
+                    top: "30px",
+                    left: "30px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    color: "white",
+                    textDecoration: "none",
+                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                    background: "rgba(255, 255, 255, 0.1)",
+                    padding: "10px 20px",
+                    borderRadius: "100px",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    transition: "all 0.3s ease",
+                    zIndex: 10
+                }}
+                onMouseEnter={(e: any) => {
+                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)";
+                    e.currentTarget.style.transform = "translateX(-5px)";
+                }}
+                onMouseLeave={(e: any) => {
+                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
+                    e.currentTarget.style.transform = "translateX(0)";
+                }}
+            >
+                <ArrowLeft size={18} />
+                <span>Back to Home</span>
+            </Link>
+
             {/* Login Container */}
-            <div style={{
+            <div className="login-container" style={{
                 display: "flex",
                 width: "900px",
                 maxWidth: "95%",
@@ -89,7 +125,7 @@ export default function AdminLoginPage() {
                 boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
             }}>
                 {/* Sidebar */}
-                <div style={{
+                <div className="login-sidebar" style={{
                     flex: 1,
                     background: "linear-gradient(135deg, #22c55e, #4ade80)",
                     padding: "40px",
@@ -168,7 +204,7 @@ export default function AdminLoginPage() {
                 </div>
 
                 {/* Login Form Section */}
-                <div style={{
+                <div className="login-form-section" style={{
                     flex: 1.2,
                     padding: "60px",
                     display: "flex",
@@ -176,7 +212,7 @@ export default function AdminLoginPage() {
                     justifyContent: "center",
                     background: "white"
                 }}>
-                    <h1 style={{
+                    <h1 className="login-title" style={{
                         fontSize: "2rem",
                         fontWeight: 800,
                         marginBottom: "8px",
@@ -187,7 +223,7 @@ export default function AdminLoginPage() {
                     }}>
                         Welcome Back
                     </h1>
-                    <p style={{
+                    <p className="login-subtitle" style={{
                         color: "#64748b",
                         marginBottom: "32px"
                     }}>
@@ -414,6 +450,55 @@ export default function AdminLoginPage() {
                 }
                 input::placeholder {
                     color: #94a3b8;
+                }
+                
+                /* Responsive Styles */
+                @media (max-width: 768px) {
+                    .login-container {
+                        flex-direction: column !important;
+                        height: auto !important;
+                        min-height: 100vh !important;
+                        max-width: 100% !important;
+                        border-radius: 0 !important;
+                    }
+                    
+                    .login-sidebar {
+                        display: none !important;
+                    }
+                    
+                    .login-form-section {
+                        padding: 40px 24px !important;
+                        min-height: 100vh !important;
+                    }
+                    
+                    .back-button {
+                        top: 20px !important;
+                        left: 20px !important;
+                        padding: 8px 16px !important;
+                        font-size: 0.85rem !important;
+                    }
+                    
+                    .login-title {
+                        font-size: 1.75rem !important;
+                    }
+                    
+                    .login-subtitle {
+                        font-size: 0.9rem !important;
+                    }
+                }
+                
+                @media (max-width: 480px) {
+                    .login-form-section {
+                        padding: 32px 20px !important;
+                    }
+                    
+                    .login-title {
+                        font-size: 1.5rem !important;
+                    }
+                    
+                    input {
+                        font-size: 16px !important; /* Prevents zoom on iOS */
+                    }
                 }
             `}</style>
         </div>

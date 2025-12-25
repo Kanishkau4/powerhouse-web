@@ -65,6 +65,7 @@ interface WorkoutTypeDist {
 
 export default function AdminDashboard() {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [stats, setStats] = useState<DashboardStats>({
         totalUsers: 0,
         totalWorkouts: 0,
@@ -89,21 +90,40 @@ export default function AdminDashboard() {
                 supabase.from("challenges").select("*", { count: "exact", head: true }),
             ]);
 
+            // 2. Fetch Recent Users (and all users for filtering count)
+            const { data: allUsersForCount } = await supabase
+                .from("users")
+                .select("email, username")
+
+            const adminEmails = ['test@powerhouse.local', 'admin@powerhouse.com']
+            const filterAdmin = (user: any) => {
+                const isAdminEmail = adminEmails.includes(user.email) ||
+                    user.email.endsWith('@powerhouse.local') ||
+                    user.email.toLowerCase().includes('admin');
+                const isAdminUsername = user.username?.toLowerCase().includes('admin');
+                return isAdminEmail || isAdminUsername;
+            };
+
+            const nonAdminUsers = allUsersForCount?.filter(u => !filterAdmin(u)) || [];
+
             setStats({
-                totalUsers: usersRes.count || 0,
+                totalUsers: nonAdminUsers.length,
                 totalWorkouts: workoutsRes.count || 0,
                 totalFoods: foodsRes.count || 0,
                 activeChallenges: challengesRes.count || 0,
             });
 
-            // 2. Fetch Recent Users
             const { data: users } = await supabase
                 .from("users")
                 .select("*")
                 .order("created_at", { ascending: false })
-                .limit(5);
+                .limit(20);
 
-            setRecentUsers(users || []);
+            const filteredRecentUsers = (users || [])
+                .filter(u => !filterAdmin(u))
+                .slice(0, 5);
+
+            setRecentUsers(filteredRecentUsers);
 
             // 3. Process User Growth (Last 7 Days)
             const endDate = new Date();
@@ -186,13 +206,32 @@ export default function AdminDashboard() {
         }
     };
 
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
+
     return (
         <>
-            <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+            {/* Mobile Overlay */}
+            <div
+                className={`admin-mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}
+                onClick={closeMobileMenu}
+            />
+
+            <Sidebar
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
+                isMobileMenuOpen={isMobileMenuOpen}
+            />
             <main className={`admin-main ${isCollapsed ? "expanded" : ""}`}>
                 <Header
                     title="Dashboard"
                     subtitle="Welcome back! Here's your fitness ecosystem overview."
+                    onMenuClick={toggleMobileMenu}
                 />
 
                 <div className="admin-content">

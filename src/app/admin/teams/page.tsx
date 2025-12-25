@@ -13,6 +13,7 @@ import { isViewerRole } from "@/lib/auth";
 
 export default function TeamsPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [teams, setTeams] = useState<Team[]>([]);
     const [loading, setLoading] = useState(true);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -83,11 +84,29 @@ export default function TeamsPage() {
         { key: "created_at", label: "Created", sortable: true },
     ];
 
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
+
     return (
         <>
-            <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+            {/* Mobile Overlay */}
+            <div
+                className={`admin-mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}
+                onClick={closeMobileMenu}
+            />
+
+            <Sidebar
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
+                isMobileMenuOpen={isMobileMenuOpen}
+            />
             <main className={`admin-main ${isCollapsed ? "expanded" : ""}`}>
-                <Header title="Teams" subtitle="View and manage user teams" />
+                <Header title="Teams" subtitle="View and manage user teams" onMenuClick={toggleMobileMenu} />
 
                 <div className="admin-content">
                     <DataTable

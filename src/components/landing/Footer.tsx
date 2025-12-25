@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Apple, Play, Dumbbell, Twitter, Instagram, Youtube } from "lucide-react";
+import { Zap, Dumbbell, Twitter, Instagram, Youtube } from "lucide-react";
 import AnimatedShaderBackground from "@/components/ui/animated-shader-background";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -52,19 +52,13 @@ export default function Footer() {
 
                 {/* App Store Buttons */}
                 <div className="footer-buttons">
-                    <a href="#" className="footer-store-button">
-                        <Apple size={28} />
+                    <a href="YOUR_APK_LINK_HERE" className="footer-store-button liquid-button">
+                        <Zap size={28} fill="currentColor" />
                         <div className="store-button-text">
-                            <span>Download on the</span>
-                            <strong>App Store</strong>
+                            <span>Get the App</span>
+                            <strong>Download APK</strong>
                         </div>
-                    </a>
-                    <a href="#" className="footer-store-button">
-                        <Play size={28} fill="black" />
-                        <div className="store-button-text">
-                            <span>Get it on</span>
-                            <strong>Google Play</strong>
-                        </div>
+                        <div className="liquid"></div>
                     </a>
                 </div>
 

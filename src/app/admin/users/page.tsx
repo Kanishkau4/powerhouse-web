@@ -12,6 +12,7 @@ import { isViewerRole } from "@/lib/auth";
 
 export default function UsersPage() {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,12 +59,15 @@ export default function UsersPage() {
         } else {
             console.log("Users fetched:", data?.length, "Total Count:", count);
 
-            // Filter out admin users (users whose email is an admin email or contains admin pattern)
-            const filteredUsers = data?.filter(user =>
-                !adminEmails.includes(user.email) &&
-                !user.email.endsWith('@powerhouse.local') &&
-                !user.email.toLowerCase().includes('admin')
-            ) || []
+            // Filter out admin users (users whose email/username is an admin or contains admin pattern)
+            const filteredUsers = data?.filter(user => {
+                const isAdminEmail = adminEmails.includes(user.email) ||
+                    user.email.endsWith('@powerhouse.local') ||
+                    user.email.toLowerCase().includes('admin');
+                const isAdminUsername = user.username?.toLowerCase().includes('admin');
+
+                return !isAdminEmail && !isAdminUsername;
+            }) || []
 
             setUsers(filteredUsers);
         }
@@ -239,13 +243,32 @@ export default function UsersPage() {
         },
     ];
 
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
+
     return (
         <>
-            <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+            {/* Mobile Overlay */}
+            <div
+                className={`admin-mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}
+                onClick={closeMobileMenu}
+            />
+
+            <Sidebar
+                isCollapsed={isCollapsed}
+                setIsCollapsed={setIsCollapsed}
+                isMobileMenuOpen={isMobileMenuOpen}
+            />
             <main className={`admin-main ${isCollapsed ? "expanded" : ""}`}>
                 <Header
                     title="Users"
                     subtitle="Manage all registered users in PowerHouse"
+                    onMenuClick={toggleMobileMenu}
                 />
 
                 <div className="admin-content">
