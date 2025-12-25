@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/assets/logo.png" alt="PowerHouse Logo" width="120" />
+  <img src="public/assets/logo1.png" alt="PowerHouse Logo" width="540" />
   <h1>PowerHouse Web</h1>
   <p><strong>A Next-Generation Fitness & Admin Platform</strong></p>
   <p>
