@@ -7,136 +7,136 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 interface NavbarProps {
-    onChatOpen?: () => void;
+  onChatOpen?: () => void;
 }
 
 export default function Navbar({ onChatOpen }: NavbarProps) {
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    // 4 Navigation Links
-    const navLinks = [
-        { name: "Home", href: "/" },
-        { name: "About", href: "/about" },
-        { name: "App Guide", href: "/guide" },
-        { name: "Download", href: "/#download" },
-    ];
-
-    const isActive = (href: string) => {
-        if (href === "/") return pathname === "/";
-        if (href.startsWith("/#")) return pathname === "/";
-        return pathname.startsWith(href);
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
     };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-    return (
-        <>
-            <div className="nav-wrapper">
-                <nav className={`nav-glass ${isScrolled ? "scrolled" : ""}`}>
-                    {/* Logo */}
-                    <Link href="/" className="nav-logo-link">
-                        <Image
-                            src="/assets/logo1.png"
-                            alt="PowerHouse Logo"
-                            width={180}
-                            height={45}
-                            style={{ objectFit: "contain" }}
-                            priority
-                        />
-                    </Link>
+  // 4 Navigation Links
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "About", href: "/about" },
+    { name: "App Guide", href: "/guide" },
+    { name: "Download", href: "YOUR_APK_LINK_HERE" },
+  ];
 
-                    {/* Desktop Nav Links */}
-                    <div className="nav-links-desktop">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                className={`nav-link ${isActive(link.href) ? "active" : ""}`}
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-                    </div>
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    if (href.startsWith("/#")) return pathname === "/";
+    return pathname.startsWith(href);
+  };
 
-                    <div className="nav-actions">
-                        {/* Chat Button */}
-                        {onChatOpen && (
-                            <button
-                                className="nav-chat-btn"
-                                onClick={onChatOpen}
-                                aria-label="Open Chat"
-                            >
-                                <MessageCircle size={18} />
-                                <span>Chat</span>
-                            </button>
-                        )}
+  return (
+    <>
+      <div className="nav-wrapper">
+        <nav className={`nav-glass ${isScrolled ? "scrolled" : ""}`}>
+          {/* Logo */}
+          <Link href="/" className="nav-logo-link">
+            <Image
+              src="/assets/logo1.png"
+              alt="PowerHouse Logo"
+              width={180}
+              height={45}
+              style={{ objectFit: "contain" }}
+              priority
+            />
+          </Link>
 
-                        {/* Login Button */}
-                        <Link href="/admin" className="nav-cta">
-                            Login
-                        </Link>
+          {/* Desktop Nav Links */}
+          <div className="nav-links-desktop">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`nav-link ${isActive(link.href) ? "active" : ""}`}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
 
-                        {/* Mobile Menu Button */}
-                        <button
-                            className="mobile-menu-btn"
-                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            aria-label="Toggle menu"
-                        >
-                            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                        </button>
-                    </div>
-                </nav>
-            </div>
-
-            {/* Mobile Menu */}
-            {isMobileMenuOpen && (
-                <div className="mobile-menu-overlay">
-                    <div className="mobile-menu-content">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className={`mobile-nav-link ${isActive(link.href) ? "active" : ""}`}
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-
-                        <div className="mobile-actions">
-                            {onChatOpen && (
-                                <button
-                                    onClick={() => {
-                                        setIsMobileMenuOpen(false);
-                                        onChatOpen();
-                                    }}
-                                    className="mobile-chat-btn"
-                                >
-                                    <MessageCircle size={20} />
-                                    Chat with AI
-                                </button>
-                            )}
-                            <Link
-                                href="/admin"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="mobile-login-btn"
-                            >
-                                Login
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+          <div className="nav-actions">
+            {/* Chat Button */}
+            {onChatOpen && (
+              <button
+                className="nav-chat-btn"
+                onClick={onChatOpen}
+                aria-label="Open Chat"
+              >
+                <MessageCircle size={18} />
+                <span>Chat</span>
+              </button>
             )}
 
-            <style jsx>{`
+            {/* Login Button */}
+            <Link href="/admin" className="nav-cta">
+              Login
+            </Link>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="mobile-menu-btn"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </nav>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="mobile-menu-overlay">
+          <div className="mobile-menu-content">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`mobile-nav-link ${isActive(link.href) ? "active" : ""}`}
+              >
+                {link.name}
+              </Link>
+            ))}
+
+            <div className="mobile-actions">
+              {onChatOpen && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onChatOpen();
+                  }}
+                  className="mobile-chat-btn"
+                >
+                  <MessageCircle size={20} />
+                  Chat with AI
+                </button>
+              )}
+              <Link
+                href="/admin"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="mobile-login-btn"
+              >
+                Login
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
         .nav-wrapper {
           position: fixed;
           top: 24px;
@@ -341,6 +341,6 @@ export default function Navbar({ onChatOpen }: NavbarProps) {
           }
         }
       `}</style>
-        </>
-    );
+    </>
+  );
 }
