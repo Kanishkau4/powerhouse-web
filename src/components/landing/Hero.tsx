@@ -73,7 +73,7 @@ export default function Hero({ phoneImage }: HeroProps) {
                     </p>
 
                     <div className="store-buttons">
-                        <a href="YOUR_APK_LINK_HERE" className="store-button liquid-button">
+                        <a href="https://github.com/Kanishkau4/PowerHouse/releases/download/V1.0.0/app-release.apk" className="store-button liquid-button">
                             <Zap size={28} fill="currentColor" />
                             <div className="store-button-text">
                                 <span>Get the App</span>

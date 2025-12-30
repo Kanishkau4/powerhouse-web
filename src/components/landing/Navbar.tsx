@@ -28,7 +28,7 @@ export default function Navbar({ onChatOpen }: NavbarProps) {
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "App Guide", href: "/guide" },
-    { name: "Download", href: "YOUR_APK_LINK_HERE" },
+    { name: "Download", href: "https://github.com/Kanishkau4/PowerHouse/releases/download/V1.0.0/app-release.apk" },
   ];
 
   const isActive = (href: string) => {

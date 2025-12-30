@@ -76,9 +76,16 @@ export default function AdminDashboard() {
     const [userGrowthData, setUserGrowthData] = useState<UserGrowth[]>([]);
     const [workoutTypeData, setWorkoutTypeData] = useState<WorkoutTypeDist[]>([]);
 
+    const [engagementDays, setEngagementDays] = useState(7);
+    const [isFetchingEngagement, setIsFetchingEngagement] = useState(false);
+
     useEffect(() => {
         fetchDashboardData();
     }, []);
+
+    useEffect(() => {
+        fetchEngagementData(engagementDays);
+    }, [engagementDays]);
 
     const fetchDashboardData = async () => {
         try {
@@ -125,62 +132,8 @@ export default function AdminDashboard() {
 
             setRecentUsers(filteredRecentUsers);
 
-            // 3. Process User Growth (Last 7 Days)
-            const endDate = new Date();
-            const startDate = subDays(endDate, 6); // Last 7 days including today
-
-            // We fetch all users to aggregate client-side (for small-scale)
-            // Ideally use a DB function for aggregation
-            const { data: allUsers } = await supabase
-                .from("users")
-                .select("created_at")
-                .gte("created_at", startOfDay(startDate).toISOString());
-
-            const growthMap = new Map();
-            // Initialize last 7 days with 0
-            for (let i = 0; i < 7; i++) {
-                const d = subDays(endDate, i);
-                const dayName = format(d, "EEE"); // Mon, Tue
-                growthMap.set(dayName, { name: dayName, users: 0, workouts: 0 }); // Workouts placeholder
-            }
-
-            if (allUsers) {
-                allUsers.forEach((u) => {
-                    const d = parseISO(u.created_at);
-                    const dayName = format(d, "EEE");
-                    if (growthMap.has(dayName)) {
-                        growthMap.get(dayName).users += 1;
-                    }
-                });
-            }
-
-            // Fetch recent workouts for the same chart
-            const { data: recentWorkouts } = await supabase
-                .from("workouts")
-                .select("created_at")
-                .gte("created_at", startOfDay(startDate).toISOString());
-
-            if (recentWorkouts) {
-                recentWorkouts.forEach((w) => {
-                    const d = parseISO(w.created_at);
-                    const dayName = format(d, "EEE");
-                    if (growthMap.has(dayName)) {
-                        growthMap.get(dayName).workouts += 1;
-                    }
-                });
-            }
-
-            // Convert Map to Array and Reverse (Mon -> Sun)
-            // Actually growthMap keys are "Wed", "Tue", etc. 
-            // We want chronological order.
-            const chartData = [];
-            for (let i = 6; i >= 0; i--) {
-                const d = subDays(endDate, i);
-                const dayName = format(d, "EEE");
-                chartData.push(growthMap.get(dayName));
-            }
-            setUserGrowthData(chartData);
-
+            // Growth data is now handled by fetchEngagementData
+            fetchEngagementData(engagementDays);
 
             // 4. Process Workout Categories
             const { data: allWorkoutCats } = await supabase.from("workouts").select("category");
@@ -203,6 +156,71 @@ export default function AdminDashboard() {
             console.error("Error fetching dashboard data:", error);
         } finally {
             // setLoading(false);
+        }
+    };
+
+    const fetchEngagementData = async (days: number) => {
+        setIsFetchingEngagement(true);
+        try {
+            const endDate = new Date();
+            const startDate = subDays(endDate, days - 1);
+
+            const { data: users } = await supabase
+                .from("users")
+                .select("created_at")
+                .gte("created_at", startOfDay(startDate).toISOString());
+
+            const { data: workouts } = await supabase
+                .from("workouts")
+                .select("created_at")
+                .gte("created_at", startOfDay(startDate).toISOString());
+
+            const growthMap = new Map();
+
+            // Format labels based on range
+            const getLabel = (date: Date) => {
+                if (days <= 7) return format(date, "EEE"); // Mon, Tue
+                return format(date, "MMM dd"); // Jan 01
+            };
+
+            // Initialize range with 0s
+            for (let i = 0; i < days; i++) {
+                const d = subDays(endDate, i);
+                const label = getLabel(d);
+                growthMap.set(label, { name: label, users: 0, workouts: 0 });
+            }
+
+            if (users) {
+                users.forEach((u) => {
+                    const d = parseISO(u.created_at);
+                    const label = getLabel(d);
+                    if (growthMap.has(label)) {
+                        growthMap.get(label).users += 1;
+                    }
+                });
+            }
+
+            if (workouts) {
+                workouts.forEach((w) => {
+                    const d = parseISO(w.created_at);
+                    const label = getLabel(d);
+                    if (growthMap.has(label)) {
+                        growthMap.get(label).workouts += 1;
+                    }
+                });
+            }
+
+            const chartData = [];
+            for (let i = days - 1; i >= 0; i--) {
+                const d = subDays(endDate, i);
+                const label = getLabel(d);
+                chartData.push(growthMap.get(label));
+            }
+            setUserGrowthData(chartData);
+        } catch (error) {
+            console.error("Error fetching engagement data:", error);
+        } finally {
+            setIsFetchingEngagement(false);
         }
     };
 
@@ -272,10 +290,15 @@ export default function AdminDashboard() {
                         {/* User Engagement Chart */}
                         <div className="admin-card">
                             <div className="admin-card-header">
-                                <h3 className="admin-card-title">New Activity (Last 7 Days)</h3>
+                                <h3 className="admin-card-title">New Activity (Last {engagementDays} Days)</h3>
                                 <div className="admin-filters">
-                                    <select className="admin-filter-select">
-                                        <option>Last 7 days</option>
+                                    <select
+                                        className="admin-filter-select"
+                                        value={engagementDays}
+                                        onChange={(e) => setEngagementDays(Number(e.target.value))}
+                                    >
+                                        <option value={7}>Last 7 days</option>
+                                        <option value={30}>Last 30 days</option>
                                     </select>
                                 </div>
                             </div>

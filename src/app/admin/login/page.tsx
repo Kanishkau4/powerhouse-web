@@ -476,6 +476,13 @@ export default function AdminLoginPage() {
                         left: 20px !important;
                         padding: 8px 16px !important;
                         font-size: 0.85rem !important;
+                        color: #1e293b !important;
+                        background: rgba(226, 232, 240, 0.8) !important;
+                        border: 1px solid rgba(148, 163, 184, 0.3) !important;
+                    }
+                    
+                    .back-button:hover {
+                        background: rgba(226, 232, 240, 1) !important;
                     }
                     
                     .login-title {
