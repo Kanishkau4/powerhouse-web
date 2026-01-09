@@ -51,8 +51,7 @@ export const metadata: Metadata = {
     creator: '@powerhouse_fit', // Example handle
   },
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
+    icon: '/icon.png',
     apple: '/assets/logo.png', // Using logo as apple touch icon backup
   },
   robots: {
