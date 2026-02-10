@@ -7,7 +7,8 @@
     --admin-primary-dark: #16a34a;
     --admin-secondary: #f97316;
     --admin-accent: #8b5cf6;
-    --admin-bg-sidebar: #0f172a;
+    --admin-bg-sidebar: transparent;
+    --admin-bg-layout: #0f172a;
     --admin-bg-main: #f8fafc;
     --admin-bg-card: #ffffff;
     --admin-text-main: #1e293b;
@@ -19,7 +20,7 @@
     --admin-danger: #ef4444;
     --admin-info: #3b82f6;
 
-    --sidebar-width: 280px;
+    --sidebar-width: 260px;
     --sidebar-collapsed-width: 80px;
     --header-height: 70px;
     --admin-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -29,7 +30,13 @@
 .admin-layout {
     display: flex;
     min-height: 100vh;
-    background-color: var(--admin-bg-sidebar);
+    background-color: var(--admin-bg-layout);
+    background-image: url("/assets/pattern.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-blend-mode: overlay;
     color: var(--admin-text-main);
 }
 
@@ -57,9 +64,9 @@
     display: none;
 }
 
-.admin-sidebar::-webkit-scrollbar-thumb {
-    background: var(--admin-primary);
-    border-radius: 2px;
+.admin-sidebar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 /* Logo Area */
@@ -163,7 +170,8 @@
 
 .admin-nav-link:hover {
     color: white;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
 }
 
 .admin-nav-link svg {
@@ -183,14 +191,21 @@
     overflow: hidden;
 }
 
-/* Active Nav Item with Curved Corners */
+/* Active Nav Item with Smooth Tab Effect */
 .admin-nav-item.active .admin-nav-link {
-    background-color: var(--admin-bg-main);
+    background-color: var(--admin-bg-card);
     color: var(--admin-primary);
-    font-weight: 600;
+    font-weight: 700;
+    box-shadow: -10px 0 20px rgba(0, 0, 0, 0.05);
+    border-radius: 30px 0 0 30px;
+    transform: translateX(0);
 }
 
-/* Curved Corner Effect - Top */
+.admin-nav-item.active .admin-nav-link:hover {
+    background-color: var(--admin-bg-card);
+}
+
+/* Smooth Rounded Curved Corner Effect - Top */
 .admin-nav-item.active::before {
     content: "";
     position: absolute;
@@ -200,11 +215,14 @@
     height: 30px;
     background-color: transparent;
     border-radius: 0 0 30px 0;
-    box-shadow: 10px 10px 0 0 var(--admin-bg-main);
+    box-shadow: 10px 10px 0 10px var(--admin-bg-card);
     pointer-events: none;
+    z-index: 10;
+    will-change: transform;
+    transform: translateZ(0);
 }
 
-/* Curved Corner Effect - Bottom */
+/* Smooth Rounded Curved Corner Effect - Bottom */
 .admin-nav-item.active::after {
     content: "";
     position: absolute;
@@ -214,8 +232,11 @@
     height: 30px;
     background-color: transparent;
     border-radius: 0 30px 0 0;
-    box-shadow: 10px -10px 0 0 var(--admin-bg-main);
+    box-shadow: 10px -10px 0 10px var(--admin-bg-card);
     pointer-events: none;
+    z-index: 10;
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .admin-nav-badge {
@@ -265,15 +286,25 @@
     display: none;
 }
 
-/* ===== MAIN CONTENT ===== */
+/* ===== MAIN CONTENT (Floating Card) ===== */
 .admin-main {
     flex: 1;
-    margin-left: var(--sidebar-width);
-    background-color: var(--admin-bg-main);
-    border-radius: 30px 0 0 30px;
-    min-height: 100vh;
+    margin: 16px 24px 16px var(--sidebar-width);
+    background-color: var(--admin-bg-card);
+    border-radius: 32px;
+    min-height: calc(100vh - 32px);
+    max-height: calc(100vh - 32px);
     transition: var(--admin-transition);
-    overflow-x: hidden;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.admin-main::-webkit-scrollbar {
+    display: none;
 }
 
 .admin-sidebar.collapsed~.admin-main,
@@ -292,7 +323,7 @@
     position: sticky;
     top: 0;
     z-index: 50;
-    border-radius: 30px 0 0 0;
+    border-radius: 32px 32px 0 0;
     min-height: 80px;
 }
 
