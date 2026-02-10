@@ -144,3 +144,13 @@ export interface Team {
     total_xp: number
     created_at: string
 }
+
+export interface AnalyticsEvent {
+    event_id: string
+    event_type: string
+    event_data?: Record<string, unknown>
+    user_agent?: string
+    ip_address?: string
+    referrer?: string
+    created_at: string
+}

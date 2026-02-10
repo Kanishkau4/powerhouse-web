@@ -37,6 +37,24 @@ export default function Navbar({ onChatOpen }: NavbarProps) {
     return pathname.startsWith(href);
   };
 
+  const handleDownloadClick = async () => {
+    // Track the download
+    try {
+      await fetch('/api/track-download', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ source: 'navbar' }),
+      });
+    } catch (error) {
+      console.error('Failed to track download:', error);
+    }
+
+    // Proceed with download
+    window.location.href = 'https://github.com/Kanishkau4/PowerHouse/releases/download/V1.0.0/app-release.apk';
+  };
+
   return (
     <>
       <div className="nav-wrapper">
@@ -56,13 +74,24 @@ export default function Navbar({ onChatOpen }: NavbarProps) {
           {/* Desktop Nav Links */}
           <div className="nav-links-desktop">
             {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`nav-link ${isActive(link.href) ? "active" : ""}`}
-              >
-                {link.name}
-              </Link>
+              link.name === "Download" ? (
+                <button
+                  key={link.name}
+                  onClick={handleDownloadClick}
+                  className="nav-link"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                  {link.name}
+                </button>
+              ) : (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`nav-link ${isActive(link.href) ? "active" : ""}`}
+                >
+                  {link.name}
+                </Link>
+              )
             ))}
           </div>
 
@@ -101,14 +130,28 @@ export default function Navbar({ onChatOpen }: NavbarProps) {
         <div className="mobile-menu-overlay">
           <div className="mobile-menu-content">
             {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`mobile-nav-link ${isActive(link.href) ? "active" : ""}`}
-              >
-                {link.name}
-              </Link>
+              link.name === "Download" ? (
+                <button
+                  key={link.name}
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleDownloadClick();
+                  }}
+                  className="mobile-nav-link"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                  {link.name}
+                </button>
+              ) : (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`mobile-nav-link ${isActive(link.href) ? "active" : ""}`}
+                >
+                  {link.name}
+                </Link>
+              )
             ))}
 
             <div className="mobile-actions">

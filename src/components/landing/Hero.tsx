@@ -17,6 +17,24 @@ export default function Hero({ phoneImage }: HeroProps) {
         offset: ["start start", "end end"],
     });
 
+    const handleDownloadClick = async () => {
+        // Track the download
+        try {
+            await fetch('/api/track-download', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ source: 'hero' }),
+            });
+        } catch (error) {
+            console.error('Failed to track download:', error);
+        }
+
+        // Proceed with download
+        window.location.href = 'https://github.com/Kanishkau4/PowerHouse/releases/download/V1.0.0/app-release.apk';
+    };
+
     // Smooth scroll progress for fluidity
     const smoothProgress = useSpring(scrollYProgress, {
         stiffness: 100,
@@ -73,14 +91,14 @@ export default function Hero({ phoneImage }: HeroProps) {
                     </p>
 
                     <div className="store-buttons">
-                        <a href="https://github.com/Kanishkau4/PowerHouse/releases/download/V1.0.0/app-release.apk" className="store-button liquid-button">
+                        <button onClick={handleDownloadClick} className="store-button liquid-button">
                             <Zap size={28} fill="currentColor" />
                             <div className="store-button-text">
                                 <span>Get the App</span>
                                 <strong>Download APK</strong>
                             </div>
                             <div className="liquid"></div>
-                        </a>
+                        </button>
                     </div>
                 </motion.div>
 

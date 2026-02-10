@@ -6,6 +6,7 @@ import {
     Dumbbell,
     Utensils,
     Trophy,
+    Download,
 } from "lucide-react";
 import Image from "next/image";
 import {
@@ -47,6 +48,7 @@ interface DashboardStats {
     totalWorkouts: number;
     totalFoods: number;
     activeChallenges: number;
+    totalDownloads: number;
 }
 
 interface UserGrowth {
@@ -71,6 +73,7 @@ export default function AdminDashboard() {
         totalWorkouts: 0,
         totalFoods: 0,
         activeChallenges: 0,
+        totalDownloads: 0,
     });
     const [recentUsers, setRecentUsers] = useState<DBUser[]>([]);
     const [userGrowthData, setUserGrowthData] = useState<UserGrowth[]>([]);
@@ -90,11 +93,14 @@ export default function AdminDashboard() {
     const fetchDashboardData = async () => {
         try {
             // 1. Fetch counts
-            const [usersRes, workoutsRes, foodsRes, challengesRes] = await Promise.all([
+            const [usersRes, workoutsRes, foodsRes, challengesRes, downloadsRes] = await Promise.all([
                 supabase.from("users").select("*", { count: "exact", head: true }),
                 supabase.from("workouts").select("*", { count: "exact", head: true }),
                 supabase.from("foods").select("*", { count: "exact", head: true }),
                 supabase.from("challenges").select("*", { count: "exact", head: true }),
+                supabase.from("analytics_events")
+                    .select("*", { count: "exact", head: true })
+                    .eq("event_type", "app_download"),
             ]);
 
             // 2. Fetch Recent Users (and all users for filtering count)
@@ -118,6 +124,7 @@ export default function AdminDashboard() {
                 totalWorkouts: workoutsRes.count || 0,
                 totalFoods: foodsRes.count || 0,
                 activeChallenges: challengesRes.count || 0,
+                totalDownloads: downloadsRes.count || 0,
             });
 
             const { data: users } = await supabase
@@ -282,6 +289,17 @@ export default function AdminDashboard() {
                             change={15.3}
                             icon={Trophy}
                             iconColor="blue"
+                        />
+                    </div>
+
+                    {/* App Downloads Stats */}
+                    <div className="admin-stats-grid" style={{ gridTemplateColumns: "1fr" }}>
+                        <StatsCard
+                            label="App Downloads"
+                            value={stats.totalDownloads.toLocaleString()}
+                            change={0}
+                            icon={Download}
+                            iconColor="purple"
                         />
                     </div>
 
