@@ -53,7 +53,13 @@ export default function AdminLoginPage() {
                 justifyContent: "center",
                 height: "100vh",
                 width: "100%",
-                background: "radial-gradient(circle at top right, #1e293b, #0f172a)"
+                backgroundColor: "#0f172a",
+                backgroundImage: 'url("/assets/pattern.png")',
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundAttachment: "fixed",
+                backgroundBlendMode: "overlay"
             }}>
                 <div style={{
                     width: "48px",
@@ -75,7 +81,13 @@ export default function AdminLoginPage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "radial-gradient(circle at top right, #1e293b, #0f172a)"
+            backgroundColor: "#0f172a",
+            backgroundImage: 'url("/assets/pattern.png")',
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundAttachment: "fixed",
+            backgroundBlendMode: "overlay"
         }}>
             {/* Back Button */}
             <Link
@@ -203,7 +215,6 @@ export default function AdminLoginPage() {
                     </div>
                 </div>
 
-                {/* Login Form Section */}
                 <div className="login-form-section" style={{
                     flex: 1.2,
                     padding: "60px",
@@ -212,6 +223,35 @@ export default function AdminLoginPage() {
                     justifyContent: "center",
                     background: "white"
                 }}>
+                    {/* Mobile Back Button Container */}
+                    <div className="mobile-back-container" style={{
+                        display: "none",
+                        width: "100%",
+                        justifyContent: "flex-end",
+                        marginBottom: "32px"
+                    }}>
+                        <Link
+                            href="/"
+                            className="mobile-back-button"
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                                color: "#ffffff",
+                                textDecoration: "none",
+                                fontSize: "0.85rem",
+                                fontWeight: 600,
+                                padding: "12px 24px",
+                                borderRadius: "100px",
+                                background: "#22c55e",
+                                boxShadow: "0 4px 12px rgba(34, 197, 94, 0.2)",
+                                zIndex: 20
+                            }}
+                        >
+                            <ArrowLeft size={16} />
+                            <span>Back to Home</span>
+                        </Link>
+                    </div>
                     <h1 className="login-title" style={{
                         fontSize: "2rem",
                         fontWeight: 800,
@@ -451,6 +491,10 @@ export default function AdminLoginPage() {
                 input::placeholder {
                     color: #94a3b8;
                 }
+
+                .mobile-back-container {
+                    display: none;
+                }
                 
                 /* Responsive Styles */
                 @media (max-width: 768px) {
@@ -469,20 +513,15 @@ export default function AdminLoginPage() {
                     .login-form-section {
                         padding: 40px 24px !important;
                         min-height: 100vh !important;
+                        justify-content: flex-start !important;
                     }
                     
                     .back-button {
-                        top: 20px !important;
-                        left: 20px !important;
-                        padding: 8px 16px !important;
-                        font-size: 0.85rem !important;
-                        color: #1e293b !important;
-                        background: rgba(226, 232, 240, 0.8) !important;
-                        border: 1px solid rgba(148, 163, 184, 0.3) !important;
+                        display: none !important;
                     }
                     
-                    .back-button:hover {
-                        background: rgba(226, 232, 240, 1) !important;
+                    .mobile-back-container {
+                        display: flex !important;
                     }
                     
                     .login-title {
@@ -508,6 +547,6 @@ export default function AdminLoginPage() {
                     }
                 }
             `}</style>
-        </div>
+        </div >
     );
 }
